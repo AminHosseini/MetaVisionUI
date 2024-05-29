@@ -41,7 +41,7 @@
               matInput
               metavisionFontHelper
               formControlName="name"
-              (focusout)="nameOut($event)"
+              (change)="nameOut()"
             />
             @if (ControlNotValid('name') &&
             getControlErrors('name')?.['required']) {
@@ -65,10 +65,10 @@
               matInput
               metavisionFontHelper
               formControlName="description"
-              (focusout)="descriptionOut($event)"
               cdkTextareaAutosize
               cdkAutosizeMinRows="3"
               cdkAutosizeMaxRows="5"
+              (change)="descriptionOut()"
             ></textarea>
             @if (ControlNotValid('description') &&
             getControlErrors('description')?.['required']) {

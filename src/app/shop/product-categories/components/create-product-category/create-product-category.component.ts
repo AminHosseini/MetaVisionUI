@@ -249,22 +249,35 @@ export class CreateProductCategoryComponent
     this.helperService.deleteKeyword(index);
   }
 
+  // /**
+  //  * پر کردن توضیحات متا بر اساس اطلاعات وارد شده داخل توضیحات
+  //  * @param e ایونت فوکس روی فیلد توضیحات
+  //  */
+  // descriptionOut(e: FocusEvent): void {
+  //   this.helperService.autoFillMetaDescription(this.productCategoryForm);
+  // }
+  // (focusout)="descriptionOut($event)"
   /**
    * پر کردن توضیحات متا بر اساس اطلاعات وارد شده داخل توضیحات
-   * @param e ایونت فوکس روی فیلد توضیحات
    */
-  descriptionOut(e: FocusEvent): void {
+  descriptionOut(): void {
     this.helperService.autoFillMetaDescription(this.productCategoryForm);
   }
 
+  // /**
+  //  * پر کردن اسلاگ بر اساس اطلاعات وارد شده داخل نام
+  //  * @param e ایونت فوکس روی فیلد نام
+  //  */
+  // nameOut(e: FocusEvent): void {
+  //   this.helperService.autoFillSlug(this.productCategoryForm);
+  // }
+  // (focusout)="nameOut($event)"
   /**
    * پر کردن اسلاگ بر اساس اطلاعات وارد شده داخل نام
-   * @param e ایونت فوکس روی فیلد نام
    */
-  nameOut(e: FocusEvent): void {
+  nameOut(): void {
     this.helperService.autoFillSlug(this.productCategoryForm);
   }
-
   /**
    * گرفتن لیست کلمات کلیدی
    * @returns لیست کلمات کلیدی
