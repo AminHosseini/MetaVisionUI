@@ -1,0 +1,9 @@
+<div class="alert alert-danger" role="alert">
+  لطفا موارد زیر را برطرف نمایید:
+  <hr />
+  <ul>
+    @for (error of errors; track $index) {
+    <li>{{ error }}</li>
+    }
+  </ul>
+</div>

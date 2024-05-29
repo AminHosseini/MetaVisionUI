@@ -1,0 +1,36 @@
+<div class="sidenav-header">
+  <img
+    [width]="setProfilePicSize()"
+    [height]="setProfilePicSize()"
+    src="https://s.cafebazaar.ir/images/upload/screenshot/com.AppBest.profaileboy-388161280917.jpg?x-img=v1/format,type_webp,lossless_false/resize,h_600,lossless_false/optimize"
+  />
+  <div class="header-text" [class.hide-header-text]="sidenavCollapsed()">
+    <h2>سیدامین حسینی</h2>
+    <p>مدیر سایت</p>
+  </div>
+</div>
+
+<mat-nav-list>
+  @for (item of menuItems(); track $index) {
+  <a
+    class="menu-item"
+    mat-list-item
+    [routerLink]="item.route"
+    routerLinkActive="selected-menu-item"
+    #rla="routerLinkActive"
+    [activated]="rla.isActive"
+  >
+    <mat-icon
+      [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
+      matListItemIcon
+      >{{ item.icon }}</mat-icon
+    >
+    <span
+      matListItemTitle
+      class="list-item-label"
+      [class.hide-list-item-label]="sidenavCollapsed()"
+      >{{ item.label }}</span
+    >
+  </a>
+  }
+</mat-nav-list>

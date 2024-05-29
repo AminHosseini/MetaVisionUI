@@ -1,1 +1,62 @@
 /* You can add global styles to this file, and also import other style files */
+
+@font-face {
+  font-family: vazir;
+  font-display: swap;
+  font-style: normal;
+  font-weight: 700;
+  src: url("../public/vazir-font-v27.2.2/Vazir-Bold.eot");
+  src: url("../public/vazir-font-v27.2.2/Vazir-Bold.eot?#iefix")
+      format("embedded-opentype"),
+    url("../public/vazir-font-v27.2.2/Vazir-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: vazir;
+  font-display: swap;
+  font-style: normal;
+  font-weight: 500;
+  src: url("../public/vazir-font-v27.2.2/Vazir-Medium.eot");
+  src: url("../public/vazir-font-v27.2.2/Vazir-Medium.eot?#iefix")
+      format("embedded-opentype"),
+    url("../public/vazir-font-v27.2.2/Vazir-Medium.woff2") format("woff2"),
+    url("../public/vazir-font-v27.2.2/Vazir-Medium.woff") format("woff"),
+    url("../public/vazir-font-v27.2.2/Vazir-Medium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: vazir;
+  font-display: swap;
+  font-style: normal;
+  font-weight: normal;
+  src: url("../public/vazir-font-v27.2.2/Vazir-Regular.eot");
+  src: url("../public/vazir-font-v27.2.2/Vazir-Regular.eot?#iefix")
+      format("embedded-opentype"),
+    url("../public/vazir-font-v27.2.2/Vazir-Regular.woff2") format("woff2"),
+    url("../public/vazir-font-v27.2.2/Vazir-Regular.woff") format("woff"),
+    url("../public/vazir-font-v27.2.2/Vazir-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: vazir;
+  font-display: swap;
+  font-style: normal;
+  font-weight: 300;
+  src: url("../public/vazir-font-v27.2.2/Vazir-Light.eot");
+  src: url("../public/vazir-font-v27.2.2/Vazir-Light.eot?#iefix")
+      format("embedded-opentype"),
+    url("../public/vazir-font-v27.2.2/Vazir-Light.woff2") format("woff2"),
+    url("../public/vazir-font-v27.2.2/Vazir-Light.woff") format("woff"),
+    url("../public/vazir-font-v27.2.2/Vazir-Light.ttf") format("truetype");
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: vazir;
+  color: #4a4f4b;
+  --primary-color: #9966cc;
+}

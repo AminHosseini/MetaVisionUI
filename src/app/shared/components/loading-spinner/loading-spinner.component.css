@@ -1,0 +1,12 @@
+.spinner {
+  margin: 0;
+  padding: 0;
+  min-width: 100vw;
+  height: 100vh;
+  position: absolute;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  z-index: 10;
+  background-color: rgba(74, 72, 67, 0.5);
+}

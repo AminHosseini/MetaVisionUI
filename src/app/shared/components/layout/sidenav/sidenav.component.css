@@ -1,0 +1,54 @@
+:host * {
+  transition: all 500ms ease-in-out;
+}
+
+.sidenav-header {
+  padding-top: 24px;
+  text-align: center;
+
+  > img {
+    border-radius: 100%;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+}
+
+.header-text {
+  height: 4.5rem;
+  overflow: hidden;
+
+  > h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    line-height: 2rem;
+  }
+
+  > p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+}
+
+.hide-header-text {
+  opacity: 0;
+  height: 0 !important;
+  overflow-x: hidden;
+}
+
+.list-item-label {
+  font-family: vazir;
+}
+
+.hide-list-item-label {
+  opacity: 0;
+}
+
+.menu-item {
+  border-right: 5px solid;
+  border-right-color: transparent;
+}
+
+.selected-menu-item {
+  border-right-color: var(--primary-color);
+  background: rgba(0, 0, 0, 0.05);
+}
