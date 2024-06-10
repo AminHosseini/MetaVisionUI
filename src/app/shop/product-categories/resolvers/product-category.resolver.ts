@@ -1,18 +1,19 @@
 import { ResolveFn } from '@angular/router';
 import { inject } from '@angular/core';
-import { ProductCategoriesModel } from '../models/product-categories.model';
 import { ProductCategoryService } from '../services/product-category.service';
+import { ProductCategoryModel } from '../models/product-category.model';
 
 /**
- * اطمینان از ارسال درخواست دریافت اطلاعات دسته بندی محصولات به ای پی آی هنگام روت کردن
+ * اطمینان از ارسال درخواست دریافت اطلاعات دسته بندی محصول با آیدی به ای پی آی هنگام روت کردن
  * @param route آدرس
  * @param state وضعیت
- * @returns لیست نوع محصولات
+ * @returns نوع محصول
  */
-export const productCategoryResolver: ResolveFn<ProductCategoriesModel[]> = (
+export const productCategoryResolver: ResolveFn<ProductCategoryModel> = (
   route,
   state
 ) => {
+  const id = route.params['id'];
   const productCategoryService = inject(ProductCategoryService);
-  return productCategoryService.fetchProductCategories();
+  return productCategoryService.fetchProductCategoryById(id);
 };

@@ -1,0 +1,267 @@
+<form
+  class="form-container"
+  [formGroup]="productCategoryForm"
+  (ngSubmit)="onSubmit(focusElement)"
+  #form="ngForm"
+  #focusElement
+>
+  <mat-card>
+    <mat-card-header
+      style="
+        display: grid;
+        grid-template-columns: repeat(2, 50%);
+        justify-content: center;
+      "
+    >
+      <mat-card-title>ویرایش دسته بندی محصول</mat-card-title>
+      <div style="justify-self: end">
+        <button
+          metavisionButtonHelper
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="changeFormStatus()"
+        >
+          ویرایش
+        </button>
+      </div>
+    </mat-card-header>
+    <br /><br /><br />
+    <ng-template metavisionPlaceholder></ng-template>
+    <mat-card-content>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field metavisionFormField>
+            <mat-label metavisionFontHelper>دسته بندی محصول اصلی</mat-label>
+            <mat-select
+              formControlName="parentId"
+              (valueChange)="formChanged()"
+            >
+              <mat-option metavisionFontHelper [value]="0">هیچکدام</mat-option>
+              @for (selectOption of selectOptions(); track $index) {
+              <mat-option
+                metavisionFontHelper
+                [value]="selectOption.productCategoryId"
+                >{{ selectOption.name }}</mat-option
+              >
+              }
+            </mat-select>
+            @if (ControlNotValid('parentId')) {
+            <mat-error metavisionFontHelper>{{
+              customValidationMessageService.fieldCannotBeEmpty
+            }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field metavisionFormField>
+            <mat-label metavisionFontHelper>نام</mat-label>
+            <input
+              type="text"
+              matInput
+              metavisionFontHelper
+              formControlName="name"
+              (change)="[nameOut(), formChanged()]"
+            />
+            @if (ControlNotValid('name') &&
+            getControlErrors('name')?.['required']) {
+            <mat-error metavisionFontHelper>{{
+              customValidationMessageService.fieldCannotBeEmpty
+            }}</mat-error>
+            } @if (ControlNotValid('name') &&
+            getControlErrors('name')?.['maxlength']) {
+            <mat-error metavisionFontHelper>{{
+              customValidationMessageService.maximumFieldCharacters
+            }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field metavisionFormField>
+            <mat-label metavisionFontHelper>توضیحات</mat-label>
+            <textarea
+              matInput
+              metavisionFontHelper
+              formControlName="description"
+              cdkTextareaAutosize
+              cdkAutosizeMinRows="3"
+              cdkAutosizeMaxRows="5"
+              (change)="[descriptionOut(), formChanged()]"
+            ></textarea>
+            @if (ControlNotValid('description') &&
+            getControlErrors('description')?.['required']) {
+            <mat-error metavisionFontHelper>{{
+              customValidationMessageService.fieldCannotBeEmpty
+            }}</mat-error>
+            } @if (ControlNotValid('description') &&
+            getControlErrors('description')?.['maxlength']) {
+            <mat-error metavisionFontHelper>{{
+              customValidationMessageService.maximumFieldCharacters
+            }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row" formGroupName="seo">
+        <div class="col-md-12">
+          <mat-form-field metavisionFormField>
+            <mat-label metavisionFontHelper>توضیحات متا</mat-label>
+            <textarea
+              matInput
+              metavisionFontHelper
+              formControlName="metaDescription"
+              cdkTextareaAutosize
+              cdkAutosizeMinRows="3"
+              cdkAutosizeMaxRows="5"
+              (change)="formChanged()"
+            ></textarea>
+            @if (ControlNotValid('metaDescription', 'seo') &&
+            getControlErrors('metaDescription', 'seo')?.['required']) {
+            <mat-error metavisionFontHelper>{{
+              customValidationMessageService.fieldCannotBeEmpty
+            }}</mat-error>
+            } @if (ControlNotValid('metaDescription', 'seo') &&
+            getControlErrors('metaDescription', 'seo')?.['maxlength']) {
+            <mat-error metavisionFontHelper>{{
+              customValidationMessageService.maximumFieldCharacters
+            }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row" formGroupName="seo">
+        <div class="col-md-12">
+          <mat-form-field metavisionFormField>
+            <mat-label metavisionFontHelper>اسلاگ</mat-label>
+            <input
+              type="text"
+              matInput
+              metavisionFontHelper
+              formControlName="slug"
+              (change)="formChanged()"
+            />
+            @if (ControlNotValid('slug', 'seo') && getControlErrors('slug',
+            'seo')?.['required']) {
+            <mat-error metavisionFontHelper>{{
+              customValidationMessageService.fieldCannotBeEmpty
+            }}</mat-error>
+            } @if (ControlNotValid('slug', 'seo') && getControlErrors('slug',
+            'seo')?.['maxlength']) {
+            <mat-error metavisionFontHelper>{{
+              customValidationMessageService.maximumFieldCharacters
+            }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-10">
+          @if (this.formDisabled()) {
+          <label
+            style="
+              color: var(--mdc-filled-text-field-disabled-input-text-color);
+              padding-right: 5px;
+              padding-top: 20px;
+            "
+          >
+            کلمات کلیدی:
+          </label>
+          <ul>
+            @for(keyword of keywords(); track $index) {
+            <li
+              style="
+                color: var(--mdc-filled-text-field-disabled-input-text-color);
+                list-style: unset;
+              "
+            >
+              {{ keyword }}
+            </li>
+            }
+          </ul>
+          } @if (!this.formDisabled()) {
+          <mat-form-field metavisionFormField>
+            <mat-label metavisionFontHelper>کلمات کلیدی</mat-label>
+            <input
+              type="text"
+              matInput
+              metavisionFontHelper
+              [(ngModel)]="keywordEntered"
+              [ngModelOptions]="{ standalone: true }"
+            />
+          </mat-form-field>
+          }
+        </div>
+        <div class="col-md-2">
+          @if (!this.formDisabled()) {
+          <button
+            metavisionAddKeywordsBtn
+            mat-raised-button
+            color="primary"
+            type="button"
+            (click)="addNewKeyword()"
+            [disabled]="activateAddKeywordBtn()"
+          >
+            <mat-icon metavisionAddIcon>add</mat-icon>
+          </button>
+          }
+        </div>
+      </div>
+      @if (!this.formDisabled()) { @if (keywords()) {
+      <div class="row" formGroupName="seo">
+        <div class="col-md-12">
+          <input
+            type="text"
+            hidden
+            formControlName="keywords"
+            [value]="keywords()"
+          />
+          @for (keyword of keywords(); track $index) {
+          <div metavisionKeywordElement>
+            <span>{{ keyword }}</span>
+            <button
+              metavisionDeleteKeywordBtn
+              type="button"
+              (click)="deleteKeyword($index)"
+            >
+              x
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+      } }
+      <br />
+      @if (keywordsValidationError()) {
+      <span metavisionCustomValidationMessage>{{
+        keywordsValidationError()
+      }}</span>
+      <br />
+      } @if (!this.formDisabled()){
+      <br /><br /><br />
+      }
+      <input formControlName="productCategoryId" hidden />
+      <input formControlName="rowVersion" hidden />
+      <button
+        metavisionButtonHelper
+        mat-raised-button
+        type="button"
+        (click)="returnToProductCategories()"
+      >
+        بازگشت
+      </button>
+      @if (!this.formDisabled()){
+      <button
+        metavisionButtonHelper
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="!productCategoryForm.valid"
+      >
+        ذخیره کردن
+      </button>
+      }
+    </mat-card-content>
+  </mat-card>
+</form>

@@ -40,9 +40,10 @@ import { CustomValidationMessageService } from '../../../../shared/services/cust
 import { ErrorHandlerService } from '../../../../shared/services/error-handler.service';
 import { ServerValidationAlertComponent } from '../../../../shared/components/server-validation-alert/server-validation-alert.component';
 import { PlaceholderDirective } from '../../../../shared/directives/placeholder.directive';
+import { ProductCategoryModel } from '../../models/product-category.model';
 
 @Component({
-  selector: 'shop-create-product-category',
+  selector: 'shop-product-category',
   standalone: true,
   imports: [
     MatFormFieldModule,
@@ -66,27 +67,23 @@ import { PlaceholderDirective } from '../../../../shared/directives/placeholder.
     PlaceholderDirective,
     ServerValidationAlertComponent,
   ],
-  templateUrl: './create-product-category.component.html',
-  styleUrl: './create-product-category.component.css',
+  templateUrl: './product-category.component.html',
+  styleUrl: './product-category.component.css',
 })
-export class CreateProductCategoryComponent
+export class ProductCategoryComponent
   implements OnInit, OnDestroy, ICanComponentDeactivate
 {
   productCategoryForm!: FormGroup;
-  // @ViewChild('form') form: any;
   form: Signal<any> = viewChild('form');
-  // keywordEntered: string = '';
   keywordEntered = signal<string>('');
-  // keywords: string[] = this.getKeywords();
   keywords = signal<string[]>(this.getKeywords());
-  // keywordsValidationError: string = '';
   keywordsValidationError = signal<string>('');
-  // selectOptions: ProductCategoriesGroupModel[] = [];
   selectOptions = signal<ProductCategoriesGroupModel[]>([]);
-  // @ViewChild(PlaceholderDirective, { static: false })
-  // serverValidationErrors!: PlaceholderDirective;
   serverValidationErrors =
     viewChild<PlaceholderDirective>(PlaceholderDirective);
+  productCategory = signal<ProductCategoryModel | null>(null);
+  formDisabled = signal<boolean>(true);
+  changesSaved = signal<boolean>(true);
 
   constructor(
     private router: Router,
@@ -101,6 +98,7 @@ export class CreateProductCategoryComponent
   ngOnInit(): void {
     this.initializeForm();
     this.fillParentIdSelect();
+    this.fillProductCategoryForm();
   }
 
   ngOnDestroy(): void {
@@ -114,7 +112,8 @@ export class CreateProductCategoryComponent
    */
   private initializeForm(): void {
     this.productCategoryForm = new FormGroup({
-      // parentId: new FormControl<number>(0, Validators.required),
+      productCategoryId: new FormControl<number>(0),
+      rowVersion: new FormControl<string>(''),
       parentId: new FormControl<number>(0),
       name: new FormControl<string>('', [
         Validators.required,
@@ -148,6 +147,49 @@ export class CreateProductCategoryComponent
   }
 
   /**
+   * پر کردن فرم با دسته بندی محصول گرفته شده
+   */
+  private fillProductCategoryForm(): void {
+    this.productCategoryForm.disable();
+    this.productCategory.set(this.productCategoryService.getProductCategory());
+    this.helperService.keywords = this.productCategory()?.seo.keywords!;
+    this.keywords.set(this.helperService.keywords);
+
+    this.productCategoryForm.patchValue({
+      productCategoryId: this.productCategory()?.productCategoryId,
+      rowVersion: this.productCategory()?.rowVersion,
+      parentId: this.productCategory()?.parentId,
+      name: this.productCategory()?.name,
+      description: this.productCategory()?.description,
+      seo: {
+        slug: this.productCategory()?.seo.slug,
+        keywords: this.productCategory()?.seo.keywords,
+        metaDescription: this.productCategory()?.seo.metaDescription,
+      },
+    });
+  }
+
+  /**
+   * مورد استفاده برای زمانی که اطلاعات داخل فرم تغییر کرده و ذخیره نشده
+   */
+  formChanged(): void {
+    this.changesSaved.set(false);
+  }
+
+  /**
+   * تغییر وضعیت فرم به فعال یا غیرفعال
+   */
+  changeFormStatus(): void {
+    if (this.productCategoryForm.enabled) {
+      this.productCategoryForm.disable();
+      this.formDisabled.set(true);
+    } else {
+      this.productCategoryForm.enable();
+      this.formDisabled.set(false);
+    }
+  }
+
+  /**
    * عملیات های انجام شده هنگام سابمیت کردن فرم
    * @param focusElement اسکرول کردن به المنت اچ تی ام الی که بالاترین جای صفحه است
    * @returns
@@ -169,7 +211,7 @@ export class CreateProductCategoryComponent
     // اسکرول کردن به المنت اچ تی ام الی
 
     // ارسال درخواست به ای پی آی
-    this.productCategoryService.createProductCategory(
+    this.productCategoryService.editProductCategory(
       this.productCategoryForm.value
     );
     // ارسال درخواست به ای پی آی
@@ -184,6 +226,7 @@ export class CreateProductCategoryComponent
     (this.productCategoryForm.controls['seo'] as FormGroup).controls[
       'keywords'
     ].patchValue(this.keywords);
+    this.changesSaved.set(true);
     // ریست کردن فرم و خالی کردن لیست کلمات کلیدی
 
     // در صورت بروز ارور ولیدیشن سمت سرور آن را نمایش میدهد
@@ -193,6 +236,11 @@ export class CreateProductCategoryComponent
       },
     });
     // در صورت بروز ارور ولیدیشن سمت سرور آن را نمایش میدهد
+
+    // گرفتن دوباره اطلاعات و پر کردن فرم
+    debugger
+    this.fillProductCategoryForm();
+    // گرفتن دوباره اطلاعات و پر کردن فرم
   }
 
   /**
@@ -238,6 +286,7 @@ export class CreateProductCategoryComponent
     this.keywordsValidationError.set('');
     this.helperService.addNewKeyword(this.keywordEntered());
     this.keywordEntered.set('');
+    this.changesSaved.set(false);
   }
 
   /**
@@ -248,14 +297,6 @@ export class CreateProductCategoryComponent
     this.helperService.deleteKeyword(index);
   }
 
-  // /**
-  //  * پر کردن توضیحات متا بر اساس اطلاعات وارد شده داخل توضیحات
-  //  * @param e ایونت فوکس روی فیلد توضیحات
-  //  */
-  // descriptionOut(e: FocusEvent): void {
-  //   this.helperService.autoFillMetaDescription(this.productCategoryForm);
-  // }
-  // (focusout)="descriptionOut($event)"
   /**
    * پر کردن توضیحات متا بر اساس اطلاعات وارد شده داخل توضیحات
    */
@@ -263,20 +304,13 @@ export class CreateProductCategoryComponent
     this.helperService.autoFillMetaDescription(this.productCategoryForm);
   }
 
-  // /**
-  //  * پر کردن اسلاگ بر اساس اطلاعات وارد شده داخل نام
-  //  * @param e ایونت فوکس روی فیلد نام
-  //  */
-  // nameOut(e: FocusEvent): void {
-  //   this.helperService.autoFillSlug(this.productCategoryForm);
-  // }
-  // (focusout)="nameOut($event)"
   /**
    * پر کردن اسلاگ بر اساس اطلاعات وارد شده داخل نام
    */
   nameOut(): void {
     this.helperService.autoFillSlug(this.productCategoryForm);
   }
+
   /**
    * گرفتن لیست کلمات کلیدی
    * @returns لیست کلمات کلیدی
@@ -319,13 +353,6 @@ export class CreateProductCategoryComponent
     );
   }
 
-  async canDeactivate(): Promise<boolean> {
-    return await this.guardsHelperService.canDeactivateWithKeywordsAsync(
-      this.productCategoryForm,
-      this.keywords()
-    );
-  }
-
   /**
    * نمایش ارور های ولیدیشن در صورت وجود
    * @param messages ارور ها
@@ -338,5 +365,11 @@ export class CreateProductCategoryComponent
       ServerValidationAlertComponent
     );
     componentRef!.instance.errors = messages;
+  }
+
+  async canDeactivate(): Promise<boolean> {
+    return await this.guardsHelperService.canDeactivateWhileChangesNotSaved(
+      this.changesSaved()
+    );
   }
 }

@@ -8,6 +8,7 @@ import { IdRowVersionModel } from '../../../shared/models/id-rowversion.model';
 import { MetavisionUrlsService } from '../../../shared/services/metavision-urls.service';
 import { ErrorHandlerService } from '../../../shared/services/error-handler.service';
 import { AlertService } from '../../../shared/services/alert.service';
+import { ProductCategoryModel } from '../models/product-category.model';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +21,9 @@ export class ProductCategoryService {
   // private productCategoriesGroup: ProductCategoriesGroupModel[] = [];
   private productCategoriesGroup = signal<ProductCategoriesGroupModel[]>([]);
   productCategoriesGroupChanged = new Subject<ProductCategoriesGroupModel[]>();
+
+  private productCategory = signal<ProductCategoryModel | null>(null);
+  productCategoryChanged = new Subject<ProductCategoryModel>();
 
   constructor(
     private httpClient: HttpClient,
@@ -102,5 +106,56 @@ export class ProductCategoryService {
    */
   getProductCategoriesGroup(): ProductCategoriesGroupModel[] {
     return this.productCategoriesGroup();
+  }
+
+  /**
+   * گرفتن نوع محصول با آیدی از ای پی آی
+   * @returns نوع محصول
+   */
+  fetchProductCategoryById(id: number): Observable<ProductCategoryModel> {
+    const data = this.httpClient.get<ProductCategoryModel>(
+      this.metavisionUrlsService.productCategoryByIdUrl(id)
+    );
+    data.subscribe({
+      next: (productCategory: ProductCategoryModel) => {
+        this.productCategory.set(productCategory);
+        this.productCategoryChanged.next(this.productCategory()!);
+      },
+      error: (err) => {
+        this.errorHandlerService.handleError(err.status);
+      },
+    });
+    return data;
+  }
+
+  /**
+   * گرفتن لیست نوع محصولات
+   * @returns لیست نوع محصولات
+   */
+  getProductCategory(): ProductCategoryModel {
+    return this.productCategory()!;
+  }
+
+  /**
+   * ویرایش دسته بندی محصول با آیدی
+   * @param productCategory اطلاعات دسته بندی محصولی که قرار است ویرایش شود
+   */
+  editProductCategory(productCategory: ProductCategoryModel): void {
+    this.httpClient
+      .put<IdRowVersionModel>(
+        this.metavisionUrlsService.productCategoryByIdUrl(
+          productCategory.productCategoryId
+        ),
+        productCategory
+      )
+      .subscribe({
+        complete: () => {
+          debugger
+          this.alertService.successAlert();
+        },
+        error: (err) => {
+          this.errorHandlerService.handleError(err);
+        },
+      });
   }
 }

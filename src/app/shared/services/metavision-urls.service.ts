@@ -17,6 +17,11 @@ export class MetavisionUrlsService {
   get productCategoriesGroupUrl(): string {
     return `${this.domain}/product-categories?select=productCategoryId,parentId,name&filter=parentId eq null`;
   }
-  
+
+  /** آدرس ای پی آی گرفتن تمامی دسته بندی های محصولات و ساخت دسته بندی محصول جدید*/
+  productCategoryByIdUrl(id: number): string {
+    return `${this.domain}/product-categories/${id}`;
+  }
+
   //#endregion
 }
