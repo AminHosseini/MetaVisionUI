@@ -110,6 +110,7 @@ export class ProductCategoryService {
 
   /**
    * گرفتن نوع محصول با آیدی از ای پی آی
+   * @param id آیدی دسته بندی محصول
    * @returns نوع محصول
    */
   fetchProductCategoryById(id: number): Observable<ProductCategoryModel> {
@@ -140,22 +141,37 @@ export class ProductCategoryService {
    * ویرایش دسته بندی محصول با آیدی
    * @param productCategory اطلاعات دسته بندی محصولی که قرار است ویرایش شود
    */
-  editProductCategory(productCategory: ProductCategoryModel): void {
-    this.httpClient
-      .put<IdRowVersionModel>(
-        this.metavisionUrlsService.productCategoryByIdUrl(
-          productCategory.productCategoryId
-        ),
-        productCategory
-      )
-      .subscribe({
-        complete: () => {
-          debugger
-          this.alertService.successAlert();
-        },
-        error: (err) => {
-          this.errorHandlerService.handleError(err);
-        },
-      });
+  editProductCategory(
+    productCategory: ProductCategoryModel
+  ): Observable<IdRowVersionModel> {
+    debugger;
+    return this.httpClient.put<IdRowVersionModel>(
+      this.metavisionUrlsService.productCategoryByIdUrl(
+        productCategory.productCategoryId
+      ),
+      productCategory
+    );
+    // .subscribe({
+    //   complete: () => {
+    //     this.alertService.successAlert();
+    //   },
+    //   error: (err) => {
+    //     this.errorHandlerService.handleError(err);
+    //   },
+    // });
+  }
+
+  /**
+   * گرفتن نوع محصول با آیدی از ای پی آی بدون سابسکرایب کردن
+   * @param id آیدی دسته بندی محصول
+   * @returns نوع محصول
+   */
+  fetchProductCategoryByIdWithoutSubscription(
+    id: number
+  ): Observable<ProductCategoryModel> {
+    debugger;
+    return this.httpClient.get<ProductCategoryModel>(
+      this.metavisionUrlsService.productCategoryByIdUrl(id)
+    );
   }
 }

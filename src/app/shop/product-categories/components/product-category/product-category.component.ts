@@ -41,6 +41,7 @@ import { ErrorHandlerService } from '../../../../shared/services/error-handler.s
 import { ServerValidationAlertComponent } from '../../../../shared/components/server-validation-alert/server-validation-alert.component';
 import { PlaceholderDirective } from '../../../../shared/directives/placeholder.directive';
 import { ProductCategoryModel } from '../../models/product-category.model';
+import { AlertService } from '../../../../shared/services/alert.service';
 
 @Component({
   selector: 'shop-product-category',
@@ -92,6 +93,7 @@ export class ProductCategoryComponent
     private productCategoryService: ProductCategoryService,
     private guardsHelperService: GuardsHelperService,
     private errorHandlerService: ErrorHandlerService,
+    private alertService: AlertService,
     public customValidationMessageService: CustomValidationMessageService
   ) {}
 
@@ -211,9 +213,18 @@ export class ProductCategoryComponent
     // اسکرول کردن به المنت اچ تی ام الی
 
     // ارسال درخواست به ای پی آی
-    this.productCategoryService.editProductCategory(
-      this.productCategoryForm.value
-    );
+    const id: number | undefined = this.productCategory()?.productCategoryId;
+    this.productCategoryService
+      .editProductCategory(this.productCategoryForm.value)
+      .subscribe({
+        complete: () => {
+          this.refillFormAfterEdit(id!);
+          this.alertService.successAlert();
+        },
+        error: (err) => {
+          this.errorHandlerService.handleError(err);
+        },
+      });
     // ارسال درخواست به ای پی آی
 
     // ریست کردن فرم و خالی کردن لیست کلمات کلیدی
@@ -236,11 +247,41 @@ export class ProductCategoryComponent
       },
     });
     // در صورت بروز ارور ولیدیشن سمت سرور آن را نمایش میدهد
+  }
 
-    // گرفتن دوباره اطلاعات و پر کردن فرم
-    debugger
-    this.fillProductCategoryForm();
-    // گرفتن دوباره اطلاعات و پر کردن فرم
+  /**
+   * گرفتن دوباره اطلاعات و پر کردن فرم بعد از ویرایش
+   * @param id آیدی دسته بندی محصول
+   */
+  private refillFormAfterEdit(id: number): void {
+    this.productCategoryService
+      .fetchProductCategoryByIdWithoutSubscription(id)
+      .subscribe({
+        next: (productCategory: ProductCategoryModel) => {
+          this.productCategoryForm.disable();
+          this.productCategory.set(productCategory);
+          this.helperService.keywords = productCategory.seo.keywords!;
+          this.keywords.set(this.helperService.keywords);
+          this.changesSaved.set(true);
+          this.formDisabled.set(true);
+
+          this.productCategoryForm.patchValue({
+            productCategoryId: productCategory.productCategoryId,
+            rowVersion: productCategory.rowVersion,
+            parentId: productCategory.parentId,
+            name: productCategory.name,
+            description: productCategory.description,
+            seo: {
+              slug: productCategory.seo.slug,
+              keywords: productCategory.seo.keywords,
+              metaDescription: productCategory.seo.metaDescription,
+            },
+          });
+        },
+        error: (err) => {
+          this.errorHandlerService.handleError(err);
+        },
+      });
   }
 
   /**
