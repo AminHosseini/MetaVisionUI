@@ -64,4 +64,22 @@ export class AlertService {
       reverseButtons: true,
     });
   }
+
+  /**
+   * نمایش سوال آیا از حذف اطمینان دارید؟
+   * @returns سوال برای تایید یا رد کردن
+   */
+  async deleteAsync(): Promise<SweetAlertResult<any>> {
+    return await Swal.fire({
+      title: 'شما در حال حذف یک رکورد میباشید!',
+      text: 'آیا از حذف اطمینان دارید؟',
+      icon: 'warning',
+      showCancelButton: true,
+      cancelButtonText: 'خیر',
+      cancelButtonColor: '#c9c5b9',
+      confirmButtonText: 'بله',
+      confirmButtonColor: '#9966CC',
+      reverseButtons: true,
+    });
+  }
 }

@@ -9,6 +9,7 @@ import { MetavisionUrlsService } from '../../../shared/services/metavision-urls.
 import { ErrorHandlerService } from '../../../shared/services/error-handler.service';
 import { AlertService } from '../../../shared/services/alert.service';
 import { ProductCategoryModel } from '../models/product-category.model';
+import { ProductCategoriesFilterModel } from '../models/product-categories.filter.model';
 
 @Injectable({
   providedIn: 'root',
@@ -52,6 +53,45 @@ export class ProductCategoryService {
     return data;
   }
 
+  fetchProductCategoriesWithoutSubscription(): Observable<
+    ProductCategoriesModel[]
+  > {
+    return this.httpClient.get<ProductCategoriesModel[]>(
+      this.metavisionUrlsService.productCategoriesUrl
+    );
+  }
+
+  /**
+   * گرفتن لیست نوع محصولات
+   * @returns لیست نوع محصولات
+   */
+  getProductCategories(): ProductCategoriesFilterModel[] {
+    const data: ProductCategoriesFilterModel[] = [];
+
+    this.productCategories().forEach(
+      (productCategory: ProductCategoriesModel) => {
+        const parentName: string | undefined =
+          +productCategory.parentId === 0 || productCategory.parentId === null
+            ? '-'
+            : this.productCategories().find((pc) => {
+                return +pc.productCategoryId === +productCategory.parentId;
+              })?.name;
+
+        data.push(
+          new ProductCategoriesFilterModel(
+            productCategory.productCategoryId,
+            productCategory.isDeleted,
+            productCategory.rowVersion,
+            productCategory.parentId,
+            parentName ?? '',
+            productCategory.name
+          )
+        );
+      }
+    );
+    return data;
+  }
+
   /**
    * ارسال درخواست ساخت نوع محصول جدید به ای پی آی
    * @param productCategory اطلاعات نوع محصول جدید
@@ -70,14 +110,6 @@ export class ProductCategoryService {
           this.errorHandlerService.handleError(err);
         },
       });
-  }
-
-  /**
-   * گرفتن لیست نوع محصولات
-   * @returns لیست نوع محصولات
-   */
-  getProductCategories(): ProductCategoriesModel[] {
-    return this.productCategories();
   }
 
   /**
@@ -144,21 +176,12 @@ export class ProductCategoryService {
   editProductCategory(
     productCategory: ProductCategoryModel
   ): Observable<IdRowVersionModel> {
-    debugger;
     return this.httpClient.put<IdRowVersionModel>(
       this.metavisionUrlsService.productCategoryByIdUrl(
         productCategory.productCategoryId
       ),
       productCategory
     );
-    // .subscribe({
-    //   complete: () => {
-    //     this.alertService.successAlert();
-    //   },
-    //   error: (err) => {
-    //     this.errorHandlerService.handleError(err);
-    //   },
-    // });
   }
 
   /**
@@ -169,9 +192,22 @@ export class ProductCategoryService {
   fetchProductCategoryByIdWithoutSubscription(
     id: number
   ): Observable<ProductCategoryModel> {
-    debugger;
     return this.httpClient.get<ProductCategoryModel>(
       this.metavisionUrlsService.productCategoryByIdUrl(id)
+    );
+  }
+
+  /**
+   * پاک کردن دسته بندی محصول
+   * @param model دسته بندی محصول RowVersion آیدی و
+   */
+  deleteProductCategory(
+    model: IdRowVersionModel
+  ): Observable<IdRowVersionModel> {
+    debugger;
+    return this.httpClient.patch<IdRowVersionModel>(
+      this.metavisionUrlsService.productCategoriesUrl,
+      model
     );
   }
 }

@@ -16,6 +16,8 @@ import { productCategoriesRoutes } from './shop/product-categories/product-categ
 // import { interceptorProvider } from './shared/interceptors/interceptor-provider';
 import { FlagBasedPreloadingStrategyService } from './shared/services/flag-based-preloading-strategy.service';
 import { httpInterceptor } from './shared/interceptors/http.interceptor';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { MatPaginatorIntlMetavision } from './shared/helpers/mat-paginator-intl-metavision';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -32,5 +34,6 @@ export const appConfig: ApplicationConfig = {
     // importProvidersFrom(RouterModule.forRoot(routes, { enableTracing: true })),
     importProvidersFrom(RouterModule.forRoot(routes)),
     // interceptorProvider,
+    { provide: MatPaginatorIntl, useClass: MatPaginatorIntlMetavision },
   ],
 };

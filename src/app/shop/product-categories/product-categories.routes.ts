@@ -16,7 +16,7 @@ export const productCategoriesRoutes: Routes = [
       import(
         './components/get-product-categories/get-product-categories.component'
       ).then((c) => c.GetProductCategoriesComponent),
-    resolve: [getProductCategoriesResolver],
+    resolve: [getProductCategoriesResolver, newProductCategoryResolver],
   },
 
   {

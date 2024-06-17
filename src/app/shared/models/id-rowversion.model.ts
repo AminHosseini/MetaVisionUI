@@ -1,7 +1,6 @@
 /**
  * rowversion مدل آیدی و
  */
-export interface IdRowVersionModel {
-  id: number;
-  rowVersion: string;
+export class IdRowVersionModel {
+  constructor(public id: number, public rowVersion: string) {}
 }
