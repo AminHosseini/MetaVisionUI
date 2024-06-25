@@ -1,13 +1,4 @@
-<div
-  style="
-    display: grid;
-    grid-template-rows: 100%;
-    grid-template-columns: 25% 25% 46%;
-    grid-gap: 20px;
-    justify-items: stretch;
-    align-items: center;
-  "
->
+<div metavisionTableHeader>
   <mat-form-field metavisionFormField>
     <mat-label>جستوجو</mat-label>
     <input
@@ -23,17 +14,17 @@
     <mat-select (valueChange)="filterCategory($event)" [value]="0">
       <mat-option metavisionFontHelper [value]="0">همه</mat-option>
       @for (selectOption of selectOptions(); track $index) {
-      <mat-option
-        metavisionFontHelper
-        [value]="selectOption.productCategoryId"
-        >{{ selectOption.name }}</mat-option
-      >
+        <mat-option
+          metavisionFontHelper
+          [value]="selectOption.productCategoryId"
+          >{{ selectOption.name }}</mat-option
+        >
       }
     </mat-select>
   </mat-form-field>
 
   <button
-    style="justify-self: end; margin-bottom: 10px"
+    metavisionTableHeaderButton
     metavisionButtonHelper
     mat-raised-button
     color="primary"
@@ -47,116 +38,89 @@
 <div>
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
     @for (column of columns; track column) {
-    <ng-container [matColumnDef]="column.columnDef">
-      @if (column.columnDef === 'operations') {
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-        metavisionFontHelper
-        style="font-size: 15px; font-weight: bolder"
-      >
-        {{ column.header }}
-      </th>
-      }
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-        mat-sort-header
-        metavisionFontHelper
-        style="font-size: 15px; font-weight: bolder"
-      >
-        {{ column.header }}
-      </th>
+      <ng-container [matColumnDef]="column.columnDef">
+        @if (column.columnDef === "operations") {
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            metavisionFontHelper
+            metavisionTableColumnHeader
+          >
+            {{ column.header }}
+          </th>
+        }
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          metavisionFontHelper
+          metavisionTableColumnHeader
+        >
+          {{ column.header }}
+        </th>
 
-      @if (column.columnDef === 'isDeleted') {
-      <td mat-cell metavisionFontHelper *matCellDef="let row">
-        @if (column.cell(row) === "false") {
-        <mat-icon
-          class="text-success"
-          style="font-size: 30px; font-weight: bold"
-          >done</mat-icon
-        >
-        } @else {
-        <mat-icon class="text-danger" style="font-size: 30px; font-weight: bold"
-          >clear</mat-icon
-        >
+        @if (column.columnDef === "isDeleted") {
+          <td mat-cell metavisionFontHelper *matCellDef="let row">
+            @if (column.cell(row) === "false") {
+              <mat-icon class="text-success" metavisionTableColumnValue
+                >done</mat-icon
+              >
+            } @else {
+              <mat-icon class="text-danger" metavisionTableColumnValue
+                >clear</mat-icon
+              >
+            }
+          </td>
         }
-      </td>
-      } @if (column.columnDef === 'operations') {
-      <td mat-cell metavisionFontHelper *matCellDef="let row">
-        @if (!getStatus(+column.cell(row))) {
-        <button
-          type="button"
-          class="btn btn-outline-warning white_on_hover"
-          title="مشاهده/ویرایش"
-          style="margin-left: 10px"
-          (click)="getProductCategory(+column.cell(row))"
-        >
-          <mat-icon
-            style="
-              display: grid;
-              align-content: center;
-              justify-content: center;
-            "
-            >remove_red_eye</mat-icon
-          >
-        </button>
-        <button
-          type="button"
-          class="btn btn-outline-secondary"
-          title="مدیریت عکس ها"
-          style="margin-left: 10px; align-items: center"
-        >
-          <mat-icon
-            style="
-              display: grid;
-              align-content: center;
-              justify-content: center;
-            "
-            >insert_photo</mat-icon
-          >
-        </button>
-        <button
-          type="button"
-          class="btn btn-outline-danger"
-          title="حذف"
-          style="margin-left: 10px"
-          (click)="onDelete(+column.cell(row))"
-        >
-          <mat-icon
-            style="
-              display: grid;
-              align-content: center;
-              justify-content: center;
-            "
-            >delete</mat-icon
-          >
-        </button>
+        @if (column.columnDef === "operations") {
+          <td mat-cell metavisionFontHelper *matCellDef="let row">
+            @if (!getStatus(+column.cell(row))) {
+              <button
+                type="button"
+                class="btn btn-outline-warning icon-hover"
+                title="مشاهده/ویرایش"
+                metavisionOperationButton
+                (click)="getProductCategory(+column.cell(row))"
+              >
+                <mat-icon metavisionOperationButtonIcon
+                  >remove_red_eye</mat-icon
+                >
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                title="مدیریت عکس ها"
+                metavisionOperationButton
+              >
+                <mat-icon metavisionOperationButtonIcon>insert_photo</mat-icon>
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-danger"
+                title="حذف"
+                metavisionOperationButton
+                (click)="onDelete(+column.cell(row))"
+              >
+                <mat-icon metavisionOperationButtonIcon>delete</mat-icon>
+              </button>
+            } @else {
+              <button
+                type="button"
+                class="btn btn-outline-success icon-hover"
+                title="بازگردانی"
+                metavisionOperationButton
+                (click)="onDelete(+column.cell(row))"
+              >
+                <mat-icon metavisionOperationButtonIcon>replay</mat-icon>
+              </button>
+            }
+          </td>
         } @else {
-        <button
-          type="button"
-          class="btn btn-outline-success white_on_hover"
-          title="بازگردانی"
-          style="margin-left: 10px"
-          (click)="onDelete(+column.cell(row))"
-        >
-          <mat-icon
-            style="
-              display: grid;
-              align-content: center;
-              justify-content: center;
-            "
-            >replay</mat-icon
-          >
-        </button>
+          <td mat-cell metavisionFontHelper *matCellDef="let row">
+            {{ column.cell(row) }}
+          </td>
         }
-      </td>
-      } @else {
-      <td mat-cell metavisionFontHelper *matCellDef="let row">
-        {{ column.cell(row) }}
-      </td>
-      }
-    </ng-container>
+      </ng-container>
     }
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

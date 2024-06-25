@@ -42,6 +42,10 @@ import { ServerValidationAlertComponent } from '../../../../shared/components/se
 import { PlaceholderDirective } from '../../../../shared/directives/placeholder.directive';
 import { ProductCategoryModel } from '../../models/product-category.model';
 import { AlertService } from '../../../../shared/services/alert.service';
+import { EditPageHeaderDirective } from '../../../../shared/directives/edit-page-header.directive';
+import { EditPageHeaderButtonDirective } from '../../../../shared/directives/edit-page-header-button.directive';
+import { KeywordsPlaceholderDirective } from '../../../../shared/directives/keywords-placeholder.directive';
+import { KeywordsPlaceholderLabelDirective } from '../../../../shared/directives/keywords-placeholder-label.directive';
 
 @Component({
   selector: 'shop-product-category',
@@ -66,6 +70,10 @@ import { AlertService } from '../../../../shared/services/alert.service';
     AddKeywordsBtnDirective,
     CustomValidationMessageDirective,
     PlaceholderDirective,
+    EditPageHeaderDirective,
+    EditPageHeaderButtonDirective,
+    KeywordsPlaceholderLabelDirective,
+    KeywordsPlaceholderDirective,
     ServerValidationAlertComponent,
   ],
   templateUrl: './product-category.component.html',
@@ -94,7 +102,7 @@ export class ProductCategoryComponent
     private guardsHelperService: GuardsHelperService,
     private errorHandlerService: ErrorHandlerService,
     private alertService: AlertService,
-    public customValidationMessageService: CustomValidationMessageService
+    public customValidationMessageService: CustomValidationMessageService,
   ) {}
 
   ngOnInit(): void {
@@ -144,7 +152,7 @@ export class ProductCategoryComponent
    */
   private fillParentIdSelect(): void {
     this.selectOptions.set(
-      this.productCategoryService.getProductCategoriesGroup()
+      this.productCategoryService.getProductCategoriesGroup(),
     );
   }
 
@@ -200,7 +208,7 @@ export class ProductCategoryComponent
     // دادن پیام خطا در صورتی که لیست کلمات کلیدی خالی بود
     if (this.helperService.keywords.length === 0) {
       this.keywordsValidationError.set(
-        this.customValidationMessageService.keywordsCannotBeEmpty
+        this.customValidationMessageService.keywordsCannotBeEmpty,
       );
       return;
     }
@@ -307,19 +315,19 @@ export class ProductCategoryComponent
   addNewKeyword(): void {
     if (!/\S/.test(this.keywordEntered())) {
       this.keywordsValidationError.set(
-        this.customValidationMessageService.keywordsCannotBeEmpty
+        this.customValidationMessageService.keywordsCannotBeEmpty,
       );
       return;
     }
     if (this.keywordEntered().length > 24) {
       this.keywordsValidationError.set(
-        this.customValidationMessageService.maximumKeywordCharacters
+        this.customValidationMessageService.maximumKeywordCharacters,
       );
       return;
     }
     if (this.helperService.keywords.length >= 8) {
       this.keywordsValidationError.set(
-        this.customValidationMessageService.maximumKeywordsArrayCount
+        this.customValidationMessageService.maximumKeywordsArrayCount,
       );
       return;
     }
@@ -336,6 +344,7 @@ export class ProductCategoryComponent
    */
   deleteKeyword(index: number): void {
     this.helperService.deleteKeyword(index);
+    this.changesSaved.set(false);
   }
 
   /**
@@ -368,12 +377,12 @@ export class ProductCategoryComponent
    */
   ControlNotValid(
     controlName: string,
-    groupName?: string
+    groupName?: string,
   ): boolean | undefined {
     return this.helperService.isNotValid(
       this.productCategoryForm,
       controlName,
-      groupName!
+      groupName!,
     );
   }
 
@@ -385,12 +394,12 @@ export class ProductCategoryComponent
    */
   getControlErrors(
     controlName: string,
-    groupName?: string
+    groupName?: string,
   ): ValidationErrors | undefined | null {
     return this.helperService.getControlErrors(
       this.productCategoryForm,
       controlName,
-      groupName
+      groupName,
     );
   }
 
@@ -403,14 +412,14 @@ export class ProductCategoryComponent
       this.serverValidationErrors()?.viewContainerRef;
     hostViewContainerRef?.clear();
     const componentRef = hostViewContainerRef?.createComponent(
-      ServerValidationAlertComponent
+      ServerValidationAlertComponent,
     );
     componentRef!.instance.errors = messages;
   }
 
   async canDeactivate(): Promise<boolean> {
     return await this.guardsHelperService.canDeactivateWhileChangesNotSaved(
-      this.changesSaved()
+      this.changesSaved(),
     );
   }
 }

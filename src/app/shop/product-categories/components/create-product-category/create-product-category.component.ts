@@ -95,7 +95,7 @@ export class CreateProductCategoryComponent
     private productCategoryService: ProductCategoryService,
     private guardsHelperService: GuardsHelperService,
     private errorHandlerService: ErrorHandlerService,
-    public customValidationMessageService: CustomValidationMessageService
+    public customValidationMessageService: CustomValidationMessageService,
   ) {}
 
   ngOnInit(): void {
@@ -114,7 +114,6 @@ export class CreateProductCategoryComponent
    */
   private initializeForm(): void {
     this.productCategoryForm = new FormGroup({
-      // parentId: new FormControl<number>(0, Validators.required),
       parentId: new FormControl<number>(0),
       name: new FormControl<string>('', [
         Validators.required,
@@ -143,7 +142,7 @@ export class CreateProductCategoryComponent
    */
   private fillParentIdSelect(): void {
     this.selectOptions.set(
-      this.productCategoryService.getProductCategoriesGroup()
+      this.productCategoryService.getProductCategoriesGroup(),
     );
   }
 
@@ -156,7 +155,7 @@ export class CreateProductCategoryComponent
     // دادن پیام خطا در صورتی که لیست کلمات کلیدی خالی بود
     if (this.helperService.keywords.length === 0) {
       this.keywordsValidationError.set(
-        this.customValidationMessageService.keywordsCannotBeEmpty
+        this.customValidationMessageService.keywordsCannotBeEmpty,
       );
       return;
     }
@@ -170,7 +169,7 @@ export class CreateProductCategoryComponent
 
     // ارسال درخواست به ای پی آی
     this.productCategoryService.createProductCategory(
-      this.productCategoryForm.value
+      this.productCategoryForm.value,
     );
     // ارسال درخواست به ای پی آی
 
@@ -218,19 +217,19 @@ export class CreateProductCategoryComponent
   addNewKeyword(): void {
     if (!/\S/.test(this.keywordEntered())) {
       this.keywordsValidationError.set(
-        this.customValidationMessageService.keywordsCannotBeEmpty
+        this.customValidationMessageService.keywordsCannotBeEmpty,
       );
       return;
     }
     if (this.keywordEntered().length > 24) {
       this.keywordsValidationError.set(
-        this.customValidationMessageService.maximumKeywordCharacters
+        this.customValidationMessageService.maximumKeywordCharacters,
       );
       return;
     }
     if (this.helperService.keywords.length >= 8) {
       this.keywordsValidationError.set(
-        this.customValidationMessageService.maximumKeywordsArrayCount
+        this.customValidationMessageService.maximumKeywordsArrayCount,
       );
       return;
     }
@@ -293,12 +292,12 @@ export class CreateProductCategoryComponent
    */
   ControlNotValid(
     controlName: string,
-    groupName?: string
+    groupName?: string,
   ): boolean | undefined {
     return this.helperService.isNotValid(
       this.productCategoryForm,
       controlName,
-      groupName!
+      groupName!,
     );
   }
 
@@ -310,19 +309,12 @@ export class CreateProductCategoryComponent
    */
   getControlErrors(
     controlName: string,
-    groupName?: string
+    groupName?: string,
   ): ValidationErrors | undefined | null {
     return this.helperService.getControlErrors(
       this.productCategoryForm,
       controlName,
-      groupName
-    );
-  }
-
-  async canDeactivate(): Promise<boolean> {
-    return await this.guardsHelperService.canDeactivateWithKeywordsAsync(
-      this.productCategoryForm,
-      this.keywords()
+      groupName,
     );
   }
 
@@ -335,8 +327,15 @@ export class CreateProductCategoryComponent
       this.serverValidationErrors()?.viewContainerRef;
     hostViewContainerRef?.clear();
     const componentRef = hostViewContainerRef?.createComponent(
-      ServerValidationAlertComponent
+      ServerValidationAlertComponent,
     );
     componentRef!.instance.errors = messages;
+  }
+
+  async canDeactivate(): Promise<boolean> {
+    return await this.guardsHelperService.canDeactivateWithKeywordsAsync(
+      this.productCategoryForm,
+      this.keywords(),
+    );
   }
 }

@@ -23,6 +23,12 @@ import { AlertService } from '../../../../shared/services/alert.service';
 import { IdRowVersionModel } from '../../../../shared/models/id-rowversion.model';
 import { ErrorHandlerService } from '../../../../shared/services/error-handler.service';
 import { ProductCategoriesModel } from '../../models/product-categories.model';
+import { TableHeaderDirective } from '../../../../shared/directives/table-header.directive';
+import { TableHeaderButtonDirective } from '../../../../shared/directives/table-header-button.directive';
+import { TableColumnHeaderDirective } from '../../../../shared/directives/table-column-header.directive';
+import { TableColumnValueDirective } from '../../../../shared/directives/table-column-value.directive';
+import { OperationButtonDirective } from '../../../../shared/directives/operation-button.directive';
+import { OperationButtonIconDirective } from '../../../../shared/directives/operation-button-icon.directive';
 
 @Component({
   selector: 'shop-get-product-categories',
@@ -38,6 +44,12 @@ import { ProductCategoriesModel } from '../../models/product-categories.model';
     MatIconModule,
     FontHelperDirective,
     ButtonHelperDirective,
+    TableHeaderDirective,
+    TableHeaderButtonDirective,
+    TableColumnHeaderDirective,
+    TableColumnValueDirective,
+    OperationButtonDirective,
+    OperationButtonIconDirective,
   ],
   templateUrl: './get-product-categories.component.html',
   styleUrl: './get-product-categories.component.css',
@@ -48,7 +60,7 @@ export class GetProductCategoriesComponent implements AfterViewInit {
   @ViewChild('input', { static: false }) searchInput!: ElementRef;
   selectOptions = signal<ProductCategoriesGroupModel[]>([]);
   private data = signal<ProductCategoriesFilterModel[]>(
-    this.productCategoryService.getProductCategories()
+    this.productCategoryService.getProductCategories(),
   );
   dataSource = new MatTableDataSource(this.data());
 
@@ -57,7 +69,7 @@ export class GetProductCategoriesComponent implements AfterViewInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private alertService: AlertService,
-    private errorHandlerService: ErrorHandlerService
+    private errorHandlerService: ErrorHandlerService,
   ) {}
 
   ngAfterViewInit() {
@@ -94,6 +106,10 @@ export class GetProductCategoriesComponent implements AfterViewInit {
   ];
   displayedColumns = this.columns.map((c) => c.columnDef);
 
+  /**
+   * جستوجو بر اساس متن وارد شده توسط کاربر
+   * @param event متن وارد شده توسط کاربر
+   */
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -107,6 +123,11 @@ export class GetProductCategoriesComponent implements AfterViewInit {
   //   })?.name;
   // }
 
+  /**
+   * گرفتن وضعیت حذف شده یا نشده بودن رکورد
+   * @param parentId دسته بندی اصلی محصول
+   * @returns وضعیت حذف شده یا نشده بودن رکورد
+   */
   getStatus(parentId: number): boolean | undefined {
     return this.data().find((productCategory) => {
       return productCategory.productCategoryId === +parentId;
@@ -118,16 +139,23 @@ export class GetProductCategoriesComponent implements AfterViewInit {
    */
   private fillParentIdSelect(): void {
     this.selectOptions.set(
-      this.productCategoryService.getProductCategoriesGroup()
+      this.productCategoryService.getProductCategoriesGroup(),
     );
   }
 
+  /**
+   * رفتن به صفحه اضافه کردن دسته بندی محصول جدید
+   */
   onAddNew(): void {
     this.router.navigate(['new'], {
       relativeTo: this.activatedRoute,
     });
   }
 
+  /**
+   * فیلتر کردن بر اساس دسته بندیه های محصول
+   * @param event دسته بندی محصول اصلی انتخاب شده توسط کاربر
+   */
   filterCategory(event: Event): void {
     if (+event === 0) {
       this.searchInput.nativeElement.value = null;
@@ -136,76 +164,112 @@ export class GetProductCategoriesComponent implements AfterViewInit {
       const filteredData: ProductCategoriesFilterModel[] = this.data().filter(
         (productCategory) => {
           return +productCategory.parentId === +event;
-        }
+        },
       );
       this.searchInput.nativeElement.value = null;
       this.dataSource = new MatTableDataSource(filteredData);
     }
   }
 
+  /**
+   * رفتن به صفحه دسته بندی محصول با آیدی دسته بندی محصول
+   * @param id آیدی دسته بندی محصول
+   */
   getProductCategory(id: number): void {
     this.router.navigate([+id], {
       relativeTo: this.activatedRoute,
     });
   }
 
-  async onDelete(id: number) {
+  /**
+   * پاک کردن رکورد
+   * @param id آیدی دسته بندی محصول
+   * @returns
+   */
+  async onDelete(id: number): Promise<void> {
+    // ارسال پیام آیا از حذف اطمینان دارید؟
     const result = await this.alertService.deleteAsync();
-    if (result.isConfirmed) {
-      const rowVersion: string =
-        this.data().find((productCategory) => {
-          return productCategory.productCategoryId === id;
-        })?.rowVersion ?? '';
+    if (!result.isConfirmed) {
+      return;
+    }
+    // ارسال پیام آیا از حذف اطمینان دارید؟
 
-      const model = new IdRowVersionModel(id, rowVersion);
-      this.productCategoryService.deleteProductCategory(model).subscribe({
-        complete: () => {
-          this.productCategoryService
-            .fetchProductCategoriesWithoutSubscription()
-            .subscribe({
-              next: (productCategories: ProductCategoriesModel[]) => {
-                const data: ProductCategoriesFilterModel[] = [];
+    // ساخت مدل برای ارسال درخواست حذف
+    const rowVersion: string = this.getRowversion(id);
+    const model = new IdRowVersionModel(id, rowVersion);
+    // ساخت مدل برای ارسال درخواست حذف
 
-                productCategories.forEach(
-                  (productCategory: ProductCategoriesModel) => {
-                    const parentName: string | undefined =
-                      +productCategory.parentId === 0 ||
-                      productCategory.parentId === null
-                        ? '-'
-                        : productCategories.find((pc) => {
-                            return (
-                              +pc.productCategoryId ===
-                              +productCategory.parentId
-                            );
-                          })?.name;
-                    data.push(
-                      new ProductCategoriesFilterModel(
-                        productCategory.productCategoryId,
-                        productCategory.isDeleted,
-                        productCategory.rowVersion,
-                        productCategory.parentId,
-                        parentName ?? '',
-                        productCategory.name
-                      )
-                    );
-                  }
-                );
+    // شروع فرآیند حذف
+    this.productCategoryService.deleteProductCategory(model).subscribe({
+      // انجام عملیات در صورت موفق بودن فرآیند حذف
+      complete: () => {
+        this.getProductCategories();
+        this.alertService.successAlert();
+      },
+      // انجام عملیات در صورت موفق بودن فرآیند حذف
 
-                this.data.set(data);
-                this.dataSource = new MatTableDataSource(this.data());
-              },
-              error: (err) => {
-                this.errorHandlerService.handleError(err);
-              },
-            });
-          this.alertService.successAlert();
+      // ارسال ارور در صورت موفق نبودن فرآیند حذف
+      error: (err) => {
+        this.errorHandlerService.handleError(err);
+      },
+      // ارسال ارور در صورت موفق نبودن فرآیند حذف
+    });
+    // پایان فرآیند حذف
+  }
+
+  /**
+   * دسته بندی محصول با آیدی rowVersion گرفتن
+   * @param id آیدی دسته بندی محصول
+   * @returns rowVersion
+   */
+  private getRowversion(id: number): string {
+    return (
+      this.data().find((productCategory) => {
+        return productCategory.productCategoryId === id;
+      })?.rowVersion ?? ''
+    );
+  }
+
+  /**
+   * گرفتن دوباره ی دسته بندی های محصول پس از حذف
+   */
+  private getProductCategories(): void {
+    this.productCategoryService
+      .fetchProductCategoriesWithoutSubscription()
+      .subscribe({
+        next: (productCategories: ProductCategoriesModel[]) => {
+          const data: ProductCategoriesFilterModel[] = [];
+
+          productCategories.forEach(
+            (productCategory: ProductCategoriesModel) => {
+              const parentName: string | undefined =
+                +productCategory.parentId === 0 ||
+                productCategory.parentId === null
+                  ? '-'
+                  : productCategories.find((pc) => {
+                      return (
+                        +pc.productCategoryId === +productCategory.parentId
+                      );
+                    })?.name;
+              data.push(
+                new ProductCategoriesFilterModel(
+                  productCategory.productCategoryId,
+                  productCategory.isDeleted,
+                  productCategory.rowVersion,
+                  productCategory.parentId,
+                  parentName ?? '',
+                  productCategory.name,
+                ),
+              );
+            },
+          );
+
+          this.data.set(data);
+          this.dataSource = new MatTableDataSource(this.data());
         },
         error: (err) => {
           this.errorHandlerService.handleError(err);
         },
       });
-    } else {
-      return;
-    }
   }
 }

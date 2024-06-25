@@ -19,17 +19,17 @@
             <mat-select formControlName="parentId">
               <mat-option metavisionFontHelper [value]="0">هیچکدام</mat-option>
               @for (selectOption of selectOptions(); track $index) {
-              <mat-option
-                metavisionFontHelper
-                [value]="selectOption.productCategoryId"
-                >{{ selectOption.name }}</mat-option
-              >
+                <mat-option
+                  metavisionFontHelper
+                  [value]="selectOption.productCategoryId"
+                  >{{ selectOption.name }}</mat-option
+                >
               }
             </mat-select>
-            @if (ControlNotValid('parentId')) {
-            <mat-error metavisionFontHelper>{{
-              customValidationMessageService.fieldCannotBeEmpty
-            }}</mat-error>
+            @if (ControlNotValid("parentId")) {
+              <mat-error metavisionFontHelper>{{
+                customValidationMessageService.fieldCannotBeEmpty
+              }}</mat-error>
             }
           </mat-form-field>
         </div>
@@ -43,16 +43,19 @@
               formControlName="name"
               (change)="nameOut()"
             />
-            @if (ControlNotValid('name') &&
-            getControlErrors('name')?.['required']) {
-            <mat-error metavisionFontHelper>{{
-              customValidationMessageService.fieldCannotBeEmpty
-            }}</mat-error>
-            } @if (ControlNotValid('name') &&
-            getControlErrors('name')?.['maxlength']) {
-            <mat-error metavisionFontHelper>{{
-              customValidationMessageService.maximumFieldCharacters
-            }}</mat-error>
+            @if (
+              ControlNotValid("name") && getControlErrors("name")?.["required"]
+            ) {
+              <mat-error metavisionFontHelper>{{
+                customValidationMessageService.fieldCannotBeEmpty
+              }}</mat-error>
+            }
+            @if (
+              ControlNotValid("name") && getControlErrors("name")?.["maxlength"]
+            ) {
+              <mat-error metavisionFontHelper>{{
+                customValidationMessageService.maximumFieldCharacters
+              }}</mat-error>
             }
           </mat-form-field>
         </div>
@@ -70,16 +73,21 @@
               cdkAutosizeMaxRows="5"
               (change)="descriptionOut()"
             ></textarea>
-            @if (ControlNotValid('description') &&
-            getControlErrors('description')?.['required']) {
-            <mat-error metavisionFontHelper>{{
-              customValidationMessageService.fieldCannotBeEmpty
-            }}</mat-error>
-            } @if (ControlNotValid('description') &&
-            getControlErrors('description')?.['maxlength']) {
-            <mat-error metavisionFontHelper>{{
-              customValidationMessageService.maximumFieldCharacters
-            }}</mat-error>
+            @if (
+              ControlNotValid("description") &&
+              getControlErrors("description")?.["required"]
+            ) {
+              <mat-error metavisionFontHelper>{{
+                customValidationMessageService.fieldCannotBeEmpty
+              }}</mat-error>
+            }
+            @if (
+              ControlNotValid("description") &&
+              getControlErrors("description")?.["maxlength"]
+            ) {
+              <mat-error metavisionFontHelper>{{
+                customValidationMessageService.maximumFieldCharacters
+              }}</mat-error>
             }
           </mat-form-field>
         </div>
@@ -96,16 +104,21 @@
               cdkAutosizeMinRows="3"
               cdkAutosizeMaxRows="5"
             ></textarea>
-            @if (ControlNotValid('metaDescription', 'seo') &&
-            getControlErrors('metaDescription', 'seo')?.['required']) {
-            <mat-error metavisionFontHelper>{{
-              customValidationMessageService.fieldCannotBeEmpty
-            }}</mat-error>
-            } @if (ControlNotValid('metaDescription', 'seo') &&
-            getControlErrors('metaDescription', 'seo')?.['maxlength']) {
-            <mat-error metavisionFontHelper>{{
-              customValidationMessageService.maximumFieldCharacters
-            }}</mat-error>
+            @if (
+              ControlNotValid("metaDescription", "seo") &&
+              getControlErrors("metaDescription", "seo")?.["required"]
+            ) {
+              <mat-error metavisionFontHelper>{{
+                customValidationMessageService.fieldCannotBeEmpty
+              }}</mat-error>
+            }
+            @if (
+              ControlNotValid("metaDescription", "seo") &&
+              getControlErrors("metaDescription", "seo")?.["maxlength"]
+            ) {
+              <mat-error metavisionFontHelper>{{
+                customValidationMessageService.maximumFieldCharacters
+              }}</mat-error>
             }
           </mat-form-field>
         </div>
@@ -120,16 +133,21 @@
               metavisionFontHelper
               formControlName="slug"
             />
-            @if (ControlNotValid('slug', 'seo') && getControlErrors('slug',
-            'seo')?.['required']) {
-            <mat-error metavisionFontHelper>{{
-              customValidationMessageService.fieldCannotBeEmpty
-            }}</mat-error>
-            } @if (ControlNotValid('slug', 'seo') && getControlErrors('slug',
-            'seo')?.['maxlength']) {
-            <mat-error metavisionFontHelper>{{
-              customValidationMessageService.maximumFieldCharacters
-            }}</mat-error>
+            @if (
+              ControlNotValid("slug", "seo") &&
+              getControlErrors("slug", "seo")?.["required"]
+            ) {
+              <mat-error metavisionFontHelper>{{
+                customValidationMessageService.fieldCannotBeEmpty
+              }}</mat-error>
+            }
+            @if (
+              ControlNotValid("slug", "seo") &&
+              getControlErrors("slug", "seo")?.["maxlength"]
+            ) {
+              <mat-error metavisionFontHelper>{{
+                customValidationMessageService.maximumFieldCharacters
+              }}</mat-error>
             }
           </mat-form-field>
         </div>
@@ -161,35 +179,35 @@
         </div>
       </div>
       @if (keywords()) {
-      <div class="row" formGroupName="seo">
-        <div class="col-md-12">
-          <input
-            type="text"
-            hidden
-            formControlName="keywords"
-            [value]="keywords()"
-          />
-          @for (keyword of keywords(); track $index) {
-          <div metavisionKeywordElement>
-            <span>{{ keyword }}</span>
-            <button
-              metavisionDeleteKeywordBtn
-              type="button"
-              (click)="deleteKeyword($index)"
-            >
-              x
-            </button>
+        <div class="row" formGroupName="seo">
+          <div class="col-md-12">
+            <input
+              type="text"
+              hidden
+              formControlName="keywords"
+              [value]="keywords()"
+            />
+            @for (keyword of keywords(); track $index) {
+              <div metavisionKeywordElement>
+                <span>{{ keyword }}</span>
+                <button
+                  metavisionDeleteKeywordBtn
+                  type="button"
+                  (click)="deleteKeyword($index)"
+                >
+                  x
+                </button>
+              </div>
+            }
           </div>
-          }
         </div>
-      </div>
       }
       <br />
       @if (keywordsValidationError()) {
-      <span metavisionCustomValidationMessage>{{
-        keywordsValidationError()
-      }}</span>
-      <br />
+        <span metavisionCustomValidationMessage>{{
+          keywordsValidationError()
+        }}</span>
+        <br />
       }
       <br /><br /><br />
       <button
