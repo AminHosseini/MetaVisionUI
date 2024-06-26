@@ -95,7 +95,7 @@ export class GetProductCategoriesComponent implements AfterViewInit {
       columnDef: 'isDeleted',
       header: 'وضعیت',
       cell: (productCategory: ProductCategoriesFilterModel) =>
-        `${productCategory.isDeleted}`,
+        `${productCategory.productCategoryId}`,
     },
     {
       columnDef: 'operations',
@@ -125,12 +125,12 @@ export class GetProductCategoriesComponent implements AfterViewInit {
 
   /**
    * گرفتن وضعیت حذف شده یا نشده بودن رکورد
-   * @param parentId دسته بندی اصلی محصول
+   * @param productCategoryId آیدی دسته بندی محصول
    * @returns وضعیت حذف شده یا نشده بودن رکورد
    */
-  getStatus(parentId: number): boolean | undefined {
+  getStatus(productCategoryId: number): boolean | undefined {
     return this.data().find((productCategory) => {
-      return productCategory.productCategoryId === +parentId;
+      return productCategory.productCategoryId === +productCategoryId;
     })?.isDeleted;
   }
 
@@ -177,6 +177,16 @@ export class GetProductCategoriesComponent implements AfterViewInit {
    */
   getProductCategory(id: number): void {
     this.router.navigate([+id], {
+      relativeTo: this.activatedRoute,
+    });
+  }
+
+  /**
+   * رفتن به صفحه مدیریت عکس های دسته بندی محصول
+   * @param id آیدی دسته بندی محصول
+   */
+  getProductCategoryPictures(id: number): void {
+    this.router.navigate([+id, 'pictures'], {
       relativeTo: this.activatedRoute,
     });
   }
@@ -265,7 +275,6 @@ export class GetProductCategoriesComponent implements AfterViewInit {
           );
 
           this.data.set(data);
-          this.dataSource = new MatTableDataSource(this.data());
         },
         error: (err) => {
           this.errorHandlerService.handleError(err);

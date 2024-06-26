@@ -61,7 +61,7 @@
 
         @if (column.columnDef === "isDeleted") {
           <td mat-cell metavisionFontHelper *matCellDef="let row">
-            @if (column.cell(row) === "false") {
+            @if (!getStatus(+column.cell(row))) {
               <mat-icon class="text-success" metavisionTableColumnValue
                 >done</mat-icon
               >
@@ -91,6 +91,7 @@
                 class="btn btn-outline-secondary"
                 title="مدیریت عکس ها"
                 metavisionOperationButton
+                (click)="getProductCategoryPictures(+column.cell(row))"
               >
                 <mat-icon metavisionOperationButtonIcon>insert_photo</mat-icon>
               </button>

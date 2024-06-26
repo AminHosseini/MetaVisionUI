@@ -204,7 +204,6 @@ export class ProductCategoryService {
   deleteProductCategory(
     model: IdRowVersionModel,
   ): Observable<IdRowVersionModel> {
-    debugger;
     return this.httpClient.patch<IdRowVersionModel>(
       this.metavisionUrlsService.productCategoriesUrl,
       model,

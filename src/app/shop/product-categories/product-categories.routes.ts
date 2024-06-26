@@ -39,4 +39,12 @@ export const productCategoriesRoutes: Routes = [
     canDeactivate: [getProductCategoryCandeactivateGuard],
     canActivate: [getProductCategoryCanactivateGuard],
   },
+
+  {
+    path: 'product-categories/:id/pictures',
+    loadComponent: () =>
+      import('../../shared/components/pictures/pictures.component').then(
+        (c) => c.PicturesComponent,
+      ),
+  },
 ];
