@@ -14,7 +14,7 @@ export class ErrorHandlerService {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private alertService: AlertService,
-    private customValidationMessageService: CustomValidationMessageService
+    private customValidationMessageService: CustomValidationMessageService,
   ) {}
 
   /**
@@ -36,7 +36,7 @@ export class ErrorHandlerService {
         break;
       case 400:
         const messages = this.customValidationMessageService.createErrorMessage(
-          err.error.errors
+          err.error.errors,
         );
         this.serverValidationErrors.next(messages);
         break;

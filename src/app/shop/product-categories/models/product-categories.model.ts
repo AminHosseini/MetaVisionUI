@@ -7,6 +7,6 @@ export class ProductCategoriesModel {
     public isDeleted: boolean,
     public rowVersion: string,
     public parentId: number,
-    public name: string
+    public name: string,
   ) {}
 }

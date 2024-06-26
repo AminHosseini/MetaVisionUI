@@ -11,19 +11,24 @@ import {
   standalone: true,
 })
 export class DeleteKeywordBtnDirective implements OnInit {
-  constructor(private elementRef: ElementRef, private renderer2: Renderer2) {}
+  constructor(
+    private elementRef: ElementRef,
+    private renderer2: Renderer2,
+  ) {}
 
   ngOnInit(): void {
     this.renderer2.setStyle(
       this.elementRef.nativeElement,
       'background-color',
-      '#b284be'
+      '#b284be',
     );
+
     this.renderer2.setStyle(this.elementRef.nativeElement, 'border', '0');
+    
     this.renderer2.setStyle(
       this.elementRef.nativeElement,
       'padding-right',
-      '10px'
+      '10px',
     );
   }
 

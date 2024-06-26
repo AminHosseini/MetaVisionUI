@@ -16,7 +16,7 @@ export class TableHeaderButtonDirective implements OnInit {
       'justify-self',
       'end',
     );
-    
+
     this.renderer2.setStyle(
       this.elementRef.nativeElement,
       'margin-bottom',

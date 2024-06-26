@@ -11,6 +11,6 @@ export class ProductCategoryModel {
     public parentId: number,
     public name: string,
     public description: string,
-    public seo: SeoModel
+    public seo: SeoModel,
   ) {}
 }

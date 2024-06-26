@@ -34,7 +34,7 @@ export class HelperService {
   /**
    * پر کردن خودکار توضیحات متا از روی توضیحات وارد شده
    * @param form فرم
-   * @returns 
+   * @returns
    */
   autoFillMetaDescription(form: FormGroup): void {
     const di = form.controls['description'].value;
@@ -45,14 +45,14 @@ export class HelperService {
     //   metaDescription: di,
     // });
     (form.controls['seo'] as FormGroup).controls['metaDescription'].patchValue(
-      di
+      di,
     );
   }
 
   /**
    * پر کردن خودکار اسلاگ از روی نام وارد شده
    * @param form فرم
-   * @returns 
+   * @returns
    */
   autoFillSlug(form: FormGroup): void {
     const ni = form.controls['name'].value;
@@ -84,7 +84,7 @@ export class HelperService {
   isNotValid(
     form: FormGroup,
     controlName: string,
-    groupName?: string
+    groupName?: string,
   ): boolean | undefined {
     let control: AbstractControl<any, any> | null;
     if (!groupName) {
@@ -105,7 +105,7 @@ export class HelperService {
   getControlErrors(
     form: FormGroup,
     controlName: string,
-    groupName?: string
+    groupName?: string,
   ): ValidationErrors | undefined | null {
     let control: AbstractControl<any, any> | null;
     if (!groupName) {

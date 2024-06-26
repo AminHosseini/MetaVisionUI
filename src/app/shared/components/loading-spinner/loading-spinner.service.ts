@@ -27,7 +27,7 @@ export class LoadingSpinnerService {
     }
   }
 
-    /**
+  /**
    * پایان دایره چرخشی انتظار
    */
   endSpinner(): void {
@@ -36,7 +36,7 @@ export class LoadingSpinnerService {
     }
   }
 
-    /**
+  /**
    * ریست کردن دایره چرخشی انتظار
    */
   resetSpinner(): void {

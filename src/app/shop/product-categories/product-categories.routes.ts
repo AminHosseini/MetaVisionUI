@@ -33,7 +33,7 @@ export const productCategoriesRoutes: Routes = [
     path: 'product-categories/:id',
     loadComponent: () =>
       import('./components/product-category/product-category.component').then(
-        (c) => c.ProductCategoryComponent
+        (c) => c.ProductCategoryComponent,
       ),
     resolve: [productCategoryResolver, newProductCategoryResolver],
     canDeactivate: [getProductCategoryCandeactivateGuard],

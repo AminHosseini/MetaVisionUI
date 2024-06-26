@@ -12,7 +12,7 @@ export class TableColumnHeaderDirective implements OnInit {
 
   ngOnInit(): void {
     this.renderer2.setStyle(this.elementRef.nativeElement, 'font-size', '15px');
-    
+
     this.renderer2.setStyle(
       this.elementRef.nativeElement,
       'font-weight',

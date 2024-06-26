@@ -16,7 +16,7 @@ export class GuardsHelperService {
    */
   async canDeactivateWithKeywordsAsync(
     form: FormGroup,
-    keywords: string[]
+    keywords: string[],
   ): Promise<boolean> {
     let allowNavigatation: boolean = true;
     if (form.touched || keywords.length !== 0) {

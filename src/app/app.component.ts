@@ -24,7 +24,7 @@ export class AppComponent {
 
   constructor(
     private router: Router,
-    private loadingSpinnerService: LoadingSpinnerService
+    private loadingSpinnerService: LoadingSpinnerService,
   ) {}
 
   ngOnInit(): void {

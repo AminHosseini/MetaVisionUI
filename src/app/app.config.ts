@@ -28,7 +28,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withPreloading(FlagBasedPreloadingStrategyService)),
     provideRouter(
       productCategoriesRoutes,
-      withPreloading(FlagBasedPreloadingStrategyService)
+      withPreloading(FlagBasedPreloadingStrategyService),
     ),
     provideHttpClient(withFetch(), withInterceptors([httpInterceptor])),
     // importProvidersFrom(RouterModule.forRoot(routes, { enableTracing: true })),

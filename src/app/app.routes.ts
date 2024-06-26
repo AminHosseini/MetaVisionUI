@@ -8,7 +8,7 @@ export const routes: Routes = [
     path: 'dashboard',
     loadComponent: () =>
       import('./dashboard/dashboard.component').then(
-        (c) => c.DashboardComponent
+        (c) => c.DashboardComponent,
       ),
   },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -16,7 +16,7 @@ export const routes: Routes = [
     path: 'not-found',
     loadComponent: () =>
       import('./shared/components/not-found/not-found.component').then(
-        (c) => c.NotFoundComponent
+        (c) => c.NotFoundComponent,
       ),
   },
   // { path: '**', redirectTo: 'not-found' },

@@ -12,25 +12,25 @@
 
 <mat-nav-list>
   @for (item of menuItems(); track $index) {
-  <a
-    class="menu-item"
-    mat-list-item
-    [routerLink]="item.route"
-    routerLinkActive="selected-menu-item"
-    #rla="routerLinkActive"
-    [activated]="rla.isActive"
-  >
-    <mat-icon
-      [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
-      matListItemIcon
-      >{{ item.icon }}</mat-icon
+    <a
+      class="menu-item"
+      mat-list-item
+      [routerLink]="item.route"
+      routerLinkActive="selected-menu-item"
+      #rla="routerLinkActive"
+      [activated]="rla.isActive"
     >
-    <span
-      matListItemTitle
-      class="list-item-label"
-      [class.hide-list-item-label]="sidenavCollapsed()"
-      >{{ item.label }}</span
-    >
-  </a>
+      <mat-icon
+        [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
+        matListItemIcon
+        >{{ item.icon }}</mat-icon
+      >
+      <span
+        matListItemTitle
+        class="list-item-label"
+        [class.hide-list-item-label]="sidenavCollapsed()"
+        >{{ item.label }}</span
+      >
+    </a>
   }
 </mat-nav-list>

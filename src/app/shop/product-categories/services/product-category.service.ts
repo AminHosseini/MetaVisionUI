@@ -30,7 +30,7 @@ export class ProductCategoryService {
     private httpClient: HttpClient,
     private metavisionUrlsService: MetavisionUrlsService,
     private errorHandlerService: ErrorHandlerService,
-    private alertService: AlertService
+    private alertService: AlertService,
   ) {}
 
   /**
@@ -39,7 +39,7 @@ export class ProductCategoryService {
    */
   fetchProductCategories(): Observable<ProductCategoriesModel[]> {
     const data = this.httpClient.get<ProductCategoriesModel[]>(
-      this.metavisionUrlsService.productCategoriesUrl
+      this.metavisionUrlsService.productCategoriesUrl,
     );
     data.subscribe({
       next: (productCategories: ProductCategoriesModel[]) => {
@@ -57,7 +57,7 @@ export class ProductCategoryService {
     ProductCategoriesModel[]
   > {
     return this.httpClient.get<ProductCategoriesModel[]>(
-      this.metavisionUrlsService.productCategoriesUrl
+      this.metavisionUrlsService.productCategoriesUrl,
     );
   }
 
@@ -84,10 +84,10 @@ export class ProductCategoryService {
             productCategory.rowVersion,
             productCategory.parentId,
             parentName ?? '',
-            productCategory.name
-          )
+            productCategory.name,
+          ),
         );
-      }
+      },
     );
     return data;
   }
@@ -100,7 +100,7 @@ export class ProductCategoryService {
     this.httpClient
       .post<IdRowVersionModel>(
         this.metavisionUrlsService.productCategoriesUrl,
-        productCategory
+        productCategory,
       )
       .subscribe({
         complete: () => {
@@ -118,7 +118,7 @@ export class ProductCategoryService {
    */
   fetchProductCategoriesGroup(): Observable<ProductCategoriesGroupModel[]> {
     const data = this.httpClient.get<ProductCategoriesGroupModel[]>(
-      this.metavisionUrlsService.productCategoriesGroupUrl
+      this.metavisionUrlsService.productCategoriesGroupUrl,
     );
     data.subscribe({
       next: (productCategoriesGroup: ProductCategoriesGroupModel[]) => {
@@ -147,7 +147,7 @@ export class ProductCategoryService {
    */
   fetchProductCategoryById(id: number): Observable<ProductCategoryModel> {
     const data = this.httpClient.get<ProductCategoryModel>(
-      this.metavisionUrlsService.productCategoryByIdUrl(id)
+      this.metavisionUrlsService.productCategoryByIdUrl(id),
     );
     data.subscribe({
       next: (productCategory: ProductCategoryModel) => {
@@ -174,13 +174,13 @@ export class ProductCategoryService {
    * @param productCategory اطلاعات دسته بندی محصولی که قرار است ویرایش شود
    */
   editProductCategory(
-    productCategory: ProductCategoryModel
+    productCategory: ProductCategoryModel,
   ): Observable<IdRowVersionModel> {
     return this.httpClient.put<IdRowVersionModel>(
       this.metavisionUrlsService.productCategoryByIdUrl(
-        productCategory.productCategoryId
+        productCategory.productCategoryId,
       ),
-      productCategory
+      productCategory,
     );
   }
 
@@ -190,10 +190,10 @@ export class ProductCategoryService {
    * @returns نوع محصول
    */
   fetchProductCategoryByIdWithoutSubscription(
-    id: number
+    id: number,
   ): Observable<ProductCategoryModel> {
     return this.httpClient.get<ProductCategoryModel>(
-      this.metavisionUrlsService.productCategoryByIdUrl(id)
+      this.metavisionUrlsService.productCategoryByIdUrl(id),
     );
   }
 
@@ -202,12 +202,12 @@ export class ProductCategoryService {
    * @param model دسته بندی محصول RowVersion آیدی و
    */
   deleteProductCategory(
-    model: IdRowVersionModel
+    model: IdRowVersionModel,
   ): Observable<IdRowVersionModel> {
     debugger;
     return this.httpClient.patch<IdRowVersionModel>(
       this.metavisionUrlsService.productCategoriesUrl,
-      model
+      model,
     );
   }
 }

@@ -11,7 +11,7 @@ import { ProductCategoryModel } from '../models/product-category.model';
  */
 export const productCategoryResolver: ResolveFn<ProductCategoryModel> = (
   route,
-  state
+  state,
 ) => {
   const id = route.params['id'];
   const productCategoryService = inject(ProductCategoryService);

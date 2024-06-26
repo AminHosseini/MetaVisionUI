@@ -5,25 +5,31 @@ import { Directive, ElementRef, OnInit, Renderer2 } from '@angular/core';
   standalone: true,
 })
 export class ButtonHelperDirective implements OnInit {
-  constructor(private elementRef: ElementRef, private renderer2: Renderer2) {}
+  constructor(
+    private elementRef: ElementRef,
+    private renderer2: Renderer2,
+  ) {}
 
   ngOnInit(): void {
     this.renderer2.setStyle(
       this.elementRef.nativeElement,
       'margin-left',
-      '10px'
+      '10px',
     );
+
     this.renderer2.setStyle(
       this.elementRef.nativeElement,
       'letter-spacing',
-      '0'
+      '0',
     );
+
     this.renderer2.setStyle(this.elementRef.nativeElement, 'font-size', '15px');
     this.renderer2.setStyle(
       this.elementRef.nativeElement,
       'font-family',
-      'vazir'
+      'vazir',
     );
+    
     this.renderer2.setStyle(this.elementRef.nativeElement, 'font-size', '15px');
   }
 }

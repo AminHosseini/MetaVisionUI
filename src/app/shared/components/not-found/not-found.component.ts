@@ -11,7 +11,10 @@ import { ButtonHelperDirective } from '../../directives/button-helper.directive'
   styleUrl: './not-found.component.css',
 })
 export class NotFoundComponent {
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+  ) {}
 
   /**
    * رفتن به صفحه داشبورد

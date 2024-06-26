@@ -11,6 +11,10 @@ export class OperationButtonDirective implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.renderer2.setStyle(this.elementRef.nativeElement, 'margin-left', '10px');
+    this.renderer2.setStyle(
+      this.elementRef.nativeElement,
+      'margin-left',
+      '10px',
+    );
   }
 }

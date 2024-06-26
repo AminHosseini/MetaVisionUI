@@ -27,6 +27,6 @@ export const httpInterceptor: HttpInterceptorFn = (req, next) => {
       error: (err: HttpErrorResponse) => {
         loadingSpinnerService.resetSpinner();
       },
-    })
+    }),
   );
 };
