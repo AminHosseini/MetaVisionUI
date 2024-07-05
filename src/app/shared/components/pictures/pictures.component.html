@@ -1,13 +1,8 @@
 <mat-tab-group>
-  <mat-tab label="اضافه کردن عکس جدید"></mat-tab>
+  <mat-tab label="اضافه کردن عکس جدید">
+    <div class="tab-container">
+      <metavision-create-picture></metavision-create-picture>
+    </div>
+  </mat-tab>
   <mat-tab label="مشاهده عکس ها"></mat-tab>
 </mat-tab-group>
-<br /><br /><br />
-<button
-  metavisionButtonHelper
-  mat-raised-button
-  type="button"
-  (click)="returnToProductCategories()"
->
-  بازگشت
-</button>
