@@ -29,6 +29,7 @@ import { TableColumnHeaderDirective } from '../../../../shared/directives/table-
 import { TableColumnValueDirective } from '../../../../shared/directives/table-column-value.directive';
 import { OperationButtonDirective } from '../../../../shared/directives/operation-button.directive';
 import { OperationButtonIconDirective } from '../../../../shared/directives/operation-button-icon.directive';
+import { PictureType } from '../../../../shared/enums/picture-type';
 
 @Component({
   selector: 'shop-get-product-categories',
@@ -188,6 +189,7 @@ export class GetProductCategoriesComponent implements AfterViewInit {
   getProductCategoryPictures(id: number): void {
     this.router.navigate([+id, 'pictures'], {
       relativeTo: this.activatedRoute,
+      queryParams: { parentId: id, pictureType: PictureType.ProductCategory },
     });
   }
 

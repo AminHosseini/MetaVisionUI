@@ -1,4 +1,9 @@
-<form class="cont">
+<form
+  class="cont"
+  [formGroup]="pictureForm"
+  (ngSubmit)="onSubmit()"
+  #form="ngForm"
+>
   <!-- <h1>بارگذاری عکس</h1> -->
   <div class="upload-form">
     <label
@@ -19,6 +24,8 @@
       id="file"
       type="file"
       name="file"
+      accept=".png, .jpeg, .jpg"
+      formControlName="pictureFile"
       (change)="onFileSelected($event)"
     />
 
@@ -52,11 +59,53 @@
     <div class="fields-container">
       <mat-form-field metavisionFormField>
         <mat-label metavisionFontHelper>عنوان عکس</mat-label>
-        <input type="text" matInput metavisionFontHelper />
+        <input
+          type="text"
+          matInput
+          metavisionFontHelper
+          formControlName="pictureTitle"
+        />
+        @if (
+          ControlNotValid("pictureTitle") &&
+          getControlErrors("pictureTitle")?.["required"]
+        ) {
+          <mat-error metavisionFontHelper>{{
+            customValidationMessageService.fieldCannotBeEmpty
+          }}</mat-error>
+        }
+        @if (
+          ControlNotValid("pictureTitle") &&
+          getControlErrors("pictureTitle")?.["maxlength"]
+        ) {
+          <mat-error metavisionFontHelper>{{
+            customValidationMessageService.maximumFieldCharacters
+          }}</mat-error>
+        }
       </mat-form-field>
       <mat-form-field metavisionFormField>
         <mat-label metavisionFontHelper>آلت عکس</mat-label>
-        <input type="text" matInput metavisionFontHelper />
+        <input
+          type="text"
+          matInput
+          metavisionFontHelper
+          formControlName="pictureAlt"
+        />
+        @if (
+          ControlNotValid("pictureAlt") &&
+          getControlErrors("pictureAlt")?.["required"]
+        ) {
+          <mat-error metavisionFontHelper>{{
+            customValidationMessageService.fieldCannotBeEmpty
+          }}</mat-error>
+        }
+        @if (
+          ControlNotValid("pictureAlt") &&
+          getControlErrors("pictureAlt")?.["maxlength"]
+        ) {
+          <mat-error metavisionFontHelper>{{
+            customValidationMessageService.maximumFieldCharacters
+          }}</mat-error>
+        }
       </mat-form-field>
     </div>
   </div>
@@ -74,6 +123,7 @@
       mat-raised-button
       color="primary"
       type="submit"
+      [disabled]="!pictureForm.valid"
     >
       اضافه کردن
     </button>

@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class MetavisionUrlsService {
   private domain: string = 'https://localhost:7191/api';
 
-  //#region productCategories
+  // productCategories
 
   /** آدرس ای پی آی گرفتن تمامی دسته بندی های محصولات و ساخت دسته بندی محصول جدید*/
   get productCategoriesUrl(): string {
@@ -23,5 +23,10 @@ export class MetavisionUrlsService {
     return `${this.domain}/product-categories/${id}`;
   }
 
-  //#endregion
+  // picture
+  
+  /** آدرس ای پی آی ساخت عکس جدید*/
+  get pictureUrl(): string {
+    return `${this.domain}/pictures`;
+  }
 }
