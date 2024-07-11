@@ -26,6 +26,15 @@ export class CustomValidationMessageService {
     return 'فقط مجاز به وارد کردن ۸ کلمه کلیدی می باشید!';
   }
 
+  fileCanNotBeLargerThan(n: number): string {
+    return `حجم فایل باید کمتر از ${n} مگابایت باشد`;
+  }
+
+  fileFormatsOnly(formats: string[]): string {
+    let extensions = formats.join(', ');
+    return `فقط مجاز به استفاده از فایل با فرمت های ${extensions} هستید`;
+  }
+
   /**
    * ساخت پیام ارور با توجه به ارور ها
    * @param errors ارور ها
@@ -70,6 +79,24 @@ export class CustomValidationMessageService {
           for (const error of errors[`seo.Keywords[${index}]`]) {
             massages.push(`کلمات کلیدی: ${error}\n`);
           }
+        }
+      }
+
+      if (errors.pictureFile) {
+        for (const error of errors.pictureFile) {
+          massages.push(`فایل: ${error}\n`);
+        }
+      }
+
+      if (errors.pictureAlt) {
+        for (const error of errors.pictureAlt) {
+          massages.push(`آلت عکس: ${error}\n`);
+        }
+      }
+
+      if (errors.pictureTitle) {
+        for (const error of errors.pictureTitle) {
+          massages.push(`عنوان عکس: ${error}\n`);
         }
       }
     }

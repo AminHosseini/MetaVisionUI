@@ -50,4 +50,28 @@ export class GuardsHelperService {
 
     return allowNavigatation;
   }
+
+  /**
+   * اجازه دادن و یا ندادن برای خروج از فرم ذخیره نشده دارای فایل
+   * @param form فرم
+   * @param file فایل
+   * @returns آیا مجاز به تغییر مسیر است؟
+   */
+  async canDeactivateWithFileAsync(
+    form: FormGroup,
+    file: File | null,
+  ): Promise<boolean> {
+    debugger;
+    let allowNavigatation: boolean = true;
+    if (form.touched || file !== null) {
+      const result = await this.alertService.exitAlertAsync();
+
+      if (result.isConfirmed) {
+        allowNavigatation = true;
+      } else {
+        allowNavigatation = false;
+      }
+    }
+    return allowNavigatation;
+  }
 }

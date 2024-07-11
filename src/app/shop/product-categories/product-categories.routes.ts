@@ -5,6 +5,8 @@ import { productCategoryResolver } from './resolvers/product-category.resolver';
 import { getProductCategoriesResolver } from './resolvers/get-product-categories.resolver';
 import { getProductCategoryCanactivateGuard } from './guards/get-product-category-canactivate.guard';
 import { getProductCategoryCandeactivateGuard } from './guards/get-product-category-candeactivate.guard';
+import { pictureCanactivateGuard } from '../../shared/guards/picture-canactivate.guard';
+import { pictureCandeactivateGuard } from '../../shared/guards/picture-candeactivate.guard';
 
 /**
  * روت های دسته بندی محصولات
@@ -46,5 +48,7 @@ export const productCategoriesRoutes: Routes = [
       import('../../shared/components/pictures/pictures.component').then(
         (c) => c.PicturesComponent,
       ),
+    canDeactivate: [pictureCandeactivateGuard],
+    canActivate: [pictureCanactivateGuard],
   },
 ];

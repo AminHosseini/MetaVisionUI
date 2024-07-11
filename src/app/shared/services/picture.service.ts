@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { CreatePictureModel } from '../models/create-picture.model';
 import { MetavisionUrlsService } from './metavision-urls.service';
 import { HttpClient } from '@angular/common/http';
 import { IdRowVersionModel } from '../models/id-rowversion.model';
@@ -19,19 +18,16 @@ export class PictureService {
 
   /**
    * ارسال درخواست ساخت عکس جدید به ای پی آی
-   * @param picture اطلاعات عکس جدید
+   * @param form اطلاعات عکس جدید
    */
-  createPicture(picture: CreatePictureModel): void {
-    debugger;
+  createPicture(form: FormData): void {
     this.httpClient
-      .post<IdRowVersionModel>(this.metavisionUrlsService.pictureUrl, picture)
+      .post<IdRowVersionModel>(this.metavisionUrlsService.pictureUrl, form)
       .subscribe({
         complete: () => {
-          debugger;
           this.alertService.successAlert();
         },
         error: (err) => {
-          debugger;
           this.errorHandlerService.handleError(err);
         },
       });
