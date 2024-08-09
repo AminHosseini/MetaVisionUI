@@ -28,6 +28,12 @@ export class AppComponent {
   ) {}
 
   ngOnInit(): void {
+    // if (isDevMode()) {
+    //   console.log('Development!');
+    // } else {
+    //   console.log('Production!');
+    // }
+    
     //#region نمایش دایره چرخشی انتظار در عوض کردن روت های نویگیشن
     this.router.events.subscribe({
       next: (routerEvent: Event) => {

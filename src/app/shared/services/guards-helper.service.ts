@@ -61,7 +61,6 @@ export class GuardsHelperService {
     form: FormGroup,
     file: File | null,
   ): Promise<boolean> {
-    debugger;
     let allowNavigatation: boolean = true;
     if (form.touched || file !== null) {
       const result = await this.alertService.exitAlertAsync();
