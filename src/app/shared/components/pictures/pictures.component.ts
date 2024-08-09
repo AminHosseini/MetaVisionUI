@@ -20,7 +20,7 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { ButtonHelperDirective } from '../../directives/button-helper.directive';
 import { FontHelperDirective } from '../../directives/font-helper.directive';
 import { ServerValidationAlertComponent } from '../server-validation-alert/server-validation-alert.component';
@@ -33,6 +33,13 @@ import { ErrorHandlerService } from '../../services/error-handler.service';
 import { GuardsHelperService } from '../../services/guards-helper.service';
 import { HelperService } from '../../services/helper.service';
 import { PictureService } from '../../services/picture.service';
+import {
+  CdkDragDrop,
+  CdkDropList,
+  CdkDrag,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
+import { PicturesModel } from '../../models/pictures.model';
 
 @Component({
   selector: 'metavision-pictures',
@@ -51,6 +58,8 @@ import { PictureService } from '../../services/picture.service';
     ButtonHelperDirective,
     PlaceholderDirective,
     CustomValidationMessageDirective,
+    CdkDropList,
+    CdkDrag,
   ],
   templateUrl: './pictures.component.html',
   styleUrl: './pictures.component.css',
@@ -77,6 +86,7 @@ export class PicturesComponent
   pictureValidationError = signal<string>('');
   allowedFormats = signal<string[]>(['image/jpeg', 'image/jpg', 'image/png']);
   allowedSize = signal<number>(3000000);
+  pictures = signal<PicturesModel[]>([]);
 
   constructor(
     private router: Router,
@@ -90,6 +100,7 @@ export class PicturesComponent
 
   ngOnInit(): void {
     this.initializeForm();
+    this.fillPictures();
   }
 
   ngOnDestroy(): void {
@@ -113,6 +124,13 @@ export class PicturesComponent
         Validators.maxLength(200),
       ]),
     });
+  }
+
+  /**
+   * پر کردن لیست عکس
+   */
+  private fillPictures(): void {
+    this.pictures.set(this.pictureService.getPictures());
   }
 
   /**
@@ -192,10 +210,19 @@ export class PicturesComponent
         this.fileAddress.set(e.target.result);
       };
       this.fileName.set(file.name);
-      this.fileSize.set(`${(file.size / 1024).toFixed(2)} کیلوبایت`);
+      this.fileSize.set(`${(file.size / 1024 / 1024).toFixed(2)} مگابایت`);
       this.fileType.set(file.type);
       this.outputBoxVisible.set(true);
     }
+  }
+
+  /**
+   * تبدیل سایز فایل به مگابایت و نمایش متن آن
+   * @param size سایز فایل
+   * @returns متن سایز فایل به مگابایت
+   */
+  toMegaByte(size: number): string {
+    return `${(size / 1024 / 1024).toFixed(2)} مگابایت`;
   }
 
   /**
@@ -341,10 +368,13 @@ export class PicturesComponent
   }
 
   async canDeactivate(): Promise<boolean> {
-    debugger;
     return await this.guardsHelperService.canDeactivateWithFileAsync(
       this.pictureForm,
       this.file,
     );
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.pictures(), event.previousIndex, event.currentIndex);
   }
 }

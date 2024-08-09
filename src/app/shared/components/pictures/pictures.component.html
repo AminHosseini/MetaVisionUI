@@ -154,5 +154,32 @@
       </form>
     </div>
   </mat-tab>
-  <mat-tab label="مشاهده عکس ها"></mat-tab>
+  <mat-tab label="مشاهده عکس ها">
+    <div class="tab-container">
+      <div
+        cdkDropList
+        class="draggable-list"
+        (cdkDropListDropped)="drop($event)"
+      >
+        @for (picture of pictures(); track picture) {
+          <div class="draggable-box" cdkDrag>
+            <div class="draggable-box-info">
+              <img
+                [src]="picture.pictureInfo.picturePath"
+                class="img-list-size"
+              />
+              <div class="image-data">
+                <span class="">نام: {{ picture.pictureInfo.pictureName }}</span>
+                <span class=""
+                  >سایز: {{ toMegaByte(picture.pictureInfo.pictureSize) }}</span
+                >
+                <span class="">آلت: {{ picture.pictureAlt }}</span>
+                <span class="">عنوان: {{ picture.pictureTitle }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </mat-tab>
 </mat-tab-group>
