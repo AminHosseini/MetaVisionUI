@@ -35,4 +35,9 @@ export class MetavisionUrlsService {
   getPicturesUrl(model: PicturesRequestModel): string {
     return `${this.domain}/pictures?parentId=${model.parentId}&pictureType=${model.pictureType}`;
   }
+
+  /** آدرس ای پی آی ویرایش ترتیب نمایش عکس ها*/
+  get pictureOrderUrl(): string {
+    return `${this.domain}/pictures/order`;
+  }
 }

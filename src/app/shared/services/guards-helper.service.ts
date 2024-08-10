@@ -60,9 +60,10 @@ export class GuardsHelperService {
   async canDeactivateWithFileAsync(
     form: FormGroup,
     file: File | null,
+    orderChanged: boolean
   ): Promise<boolean> {
     let allowNavigatation: boolean = true;
-    if (form.touched || file !== null) {
+    if (form.touched || file !== null || orderChanged) {
       const result = await this.alertService.exitAlertAsync();
 
       if (result.isConfirmed) {

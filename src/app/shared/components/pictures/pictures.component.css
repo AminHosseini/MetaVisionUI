@@ -274,3 +274,11 @@
   height: 120px;
   border-radius: 8px;
 }
+
+.change-order-warning {
+  padding-bottom: 20px;
+  display: grid;
+  grid-template-columns: 80% 20%;
+  justify-items: start;
+  align-items: start;
+}

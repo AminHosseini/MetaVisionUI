@@ -1,3 +1,4 @@
+import { PictureType } from '../enums/picture-type';
 import { PictureInfoModel } from './picture-info.model';
 
 /**
@@ -11,5 +12,6 @@ export class PicturesModel {
     public pictureAlt: string,
     public pictureTitle: string,
     public displayOrder: number,
+    public pictureType: PictureType,
   ) {}
 }

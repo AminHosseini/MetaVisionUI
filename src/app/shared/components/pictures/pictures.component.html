@@ -156,30 +156,64 @@
   </mat-tab>
   <mat-tab label="مشاهده عکس ها">
     <div class="tab-container">
-      <div
-        cdkDropList
-        class="draggable-list"
-        (cdkDropListDropped)="drop($event)"
-      >
-        @for (picture of pictures(); track picture) {
-          <div class="draggable-box" cdkDrag>
-            <div class="draggable-box-info">
-              <img
-                [src]="picture.pictureInfo.picturePath"
-                class="img-list-size"
-              />
-              <div class="image-data">
-                <span class="">نام: {{ picture.pictureInfo.pictureName }}</span>
-                <span class=""
-                  >سایز: {{ toMegaByte(picture.pictureInfo.pictureSize) }}</span
-                >
-                <span class="">آلت: {{ picture.pictureAlt }}</span>
-                <span class="">عنوان: {{ picture.pictureTitle }}</span>
+      @if (pictures().length > 0) {
+        <div class="change-order-warning">
+          <p style="color: #9966cc">
+            برای تغییر اولویت نمایش عکس ها آن ها را بکشید و در جای مورد نظر رها
+            کنید.
+          </p>
+          <div>
+            <button
+              metavisionButtonHelper
+              mat-raised-button
+              type="button"
+              (click)="returnToProductCategories()"
+            >
+              بازگشت
+            </button>
+            <button
+              metavisionButtonHelper
+              mat-raised-button
+              color="primary"
+              type="button"
+              style="justify-self: end"
+              [disabled]="this.picturesOrderChange().length <= 0"
+              (click)="changePictureOrders()"
+            >
+              ‌ذخیره کردن
+            </button>
+          </div>
+        </div>
+        <div
+          cdkDropList
+          class="draggable-list"
+          (cdkDropListDropped)="drop($event)"
+        >
+          @for (picture of pictures(); track picture) {
+            <div class="draggable-box" cdkDrag>
+              <div class="draggable-box-info">
+                <img
+                  [src]="picture.pictureInfo.picturePath"
+                  class="img-list-size"
+                />
+                <div class="image-data">
+                  <span class=""
+                    >نام: {{ picture.pictureInfo.pictureName }}</span
+                  >
+                  <span class=""
+                    >سایز:
+                    {{ toMegaByte(picture.pictureInfo.pictureSize) }}</span
+                  >
+                  <span class="">آلت: {{ picture.pictureAlt }}</span>
+                  <span class="">عنوان: {{ picture.pictureTitle }}</span>
+                </div>
               </div>
             </div>
-          </div>
-        }
-      </div>
+          }
+        </div>
+      } @else {
+        <span>هیچ عکسی برای نمایش وجود ندارد!</span>
+      }
     </div>
   </mat-tab>
 </mat-tab-group>

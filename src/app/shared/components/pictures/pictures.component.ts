@@ -40,6 +40,10 @@ import {
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
 import { PicturesModel } from '../../models/pictures.model';
+import { AlertService } from '../../services/alert.service';
+import { PicturesRequestModel } from '../../models/pictures-request.model';
+import { ChangePictureOrderModel } from '../../models/change-picture-order.model';
+import { PictureType } from '../../enums/picture-type';
 
 @Component({
   selector: 'metavision-pictures',
@@ -87,6 +91,7 @@ export class PicturesComponent
   allowedFormats = signal<string[]>(['image/jpeg', 'image/jpg', 'image/png']);
   allowedSize = signal<number>(3000000);
   pictures = signal<PicturesModel[]>([]);
+  picturesOrderChange = signal<ChangePictureOrderModel[]>([]);
 
   constructor(
     private router: Router,
@@ -95,6 +100,7 @@ export class PicturesComponent
     private pictureService: PictureService,
     private errorHandlerService: ErrorHandlerService,
     private guardsHelperService: GuardsHelperService,
+    private alertService: AlertService,
     public customValidationMessageService: CustomValidationMessageService,
   ) {}
 
@@ -321,7 +327,15 @@ export class PicturesComponent
     // formData.append('pictureType', pictureType);
 
     // api ارسال درخواست به
-    this.pictureService.createPicture(formData);
+    this.pictureService.createPicture(formData).subscribe({
+      complete: () => {
+        this.refillPictures(new PicturesRequestModel(+parentId, +pictureType));
+        this.alertService.successAlert();
+      },
+      error: (err) => {
+        this.errorHandlerService.handleError(err);
+      },
+    });
     // api ارسال درخواست به
 
     // ریست فرم و پاک کردن اطلاعات
@@ -331,6 +345,7 @@ export class PicturesComponent
     this.serverValidationErrors()?.viewContainerRef.clear();
     this.pictureForm.reset();
     this.form().resetForm();
+    this.picturesOrderChange.set([]);
     // ریست فرم و پاک کردن اطلاعات
 
     // در صورت بروز ارور ولیدیشن سمت سرور آن را نمایش میدهد
@@ -340,6 +355,21 @@ export class PicturesComponent
       },
     });
     // در صورت بروز ارور ولیدیشن سمت سرور آن را نمایش میدهد
+  }
+
+  /**
+   * پر کردن دوباره لیست عکس بعد از آپلود عکس جدید
+   * @param model مدل درخواست عکس
+   */
+  private refillPictures(model: PicturesRequestModel): void {
+    this.pictureService.fetchPicturesWithoutSubscription(model).subscribe({
+      next: (pictures: PicturesModel[]) => {
+        this.pictures.set(pictures);
+      },
+      error: (err) => {
+        this.errorHandlerService.handleError(err);
+      },
+    });
   }
 
   /**
@@ -368,13 +398,60 @@ export class PicturesComponent
   }
 
   async canDeactivate(): Promise<boolean> {
+    let orderchanged = this.picturesOrderChange().length > 0;
     return await this.guardsHelperService.canDeactivateWithFileAsync(
       this.pictureForm,
       this.file,
+      orderchanged,
     );
   }
 
-  drop(event: CdkDragDrop<string[]>) {
+  /**
+   * عملیات های انجام شده برای تغییر اولویت نمایش عکس هنگام درگ دراپ
+   * @param event ایونت درگ دراپ
+   */
+  drop(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.pictures(), event.previousIndex, event.currentIndex);
+
+    const pictureType: number =
+      +this.activatedRoute.snapshot.queryParams['pictureType'];
+
+    this.picturesOrderChange.set([]);
+    for (let index = 0; index < this.pictures().length; index++) {
+      let element: PicturesModel = this.pictures()[index];
+
+      this.picturesOrderChange().push({
+        pictureId: element.pictureId,
+        displayOrder: index + 1,
+        pictureType: pictureType as PictureType,
+        rowVersion: element.rowVersion,
+      });
+    }
+  }
+
+  /**
+   * ارسال درخواست تغییر اولویت نمایش عکس به ای پی آی
+   */
+  changePictureOrders(): void {
+    const parentId: string =
+      this.activatedRoute.snapshot.queryParams['parentId'];
+    const pictureType: string =
+      this.activatedRoute.snapshot.queryParams['pictureType'];
+
+    this.pictureService
+      .editPicturesDisplayOrder(this.picturesOrderChange())
+      .subscribe({
+        complete: () => {
+          this.refillPictures(
+            new PicturesRequestModel(+parentId, +pictureType),
+          );
+          this.alertService.successAlert();
+        },
+        error: (err) => {
+          this.errorHandlerService.handleError(err);
+        },
+      });
+
+    this.picturesOrderChange.set([]);
   }
 }
