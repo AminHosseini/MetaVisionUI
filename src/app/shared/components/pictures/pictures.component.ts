@@ -1,5 +1,6 @@
 import {
   Component,
+  model,
   OnDestroy,
   OnInit,
   Signal,
@@ -20,7 +21,15 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
+import {
+  CdkDragDrop,
+  CdkDropList,
+  CdkDrag,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { ButtonHelperDirective } from '../../directives/button-helper.directive';
 import { FontHelperDirective } from '../../directives/font-helper.directive';
 import { ServerValidationAlertComponent } from '../server-validation-alert/server-validation-alert.component';
@@ -33,17 +42,15 @@ import { ErrorHandlerService } from '../../services/error-handler.service';
 import { GuardsHelperService } from '../../services/guards-helper.service';
 import { HelperService } from '../../services/helper.service';
 import { PictureService } from '../../services/picture.service';
-import {
-  CdkDragDrop,
-  CdkDropList,
-  CdkDrag,
-  moveItemInArray,
-} from '@angular/cdk/drag-drop';
 import { PicturesModel } from '../../models/pictures.model';
 import { AlertService } from '../../services/alert.service';
 import { PicturesRequestModel } from '../../models/pictures-request.model';
 import { ChangePictureOrderModel } from '../../models/change-picture-order.model';
 import { PictureType } from '../../enums/picture-type';
+import { EditPictureModalComponent } from './edit-picture-modal/edit-picture-modal.component';
+import { OperationButtonDirective } from '../../directives/operation-button.directive';
+import { OperationButtonIconDirective } from '../../directives/operation-button-icon.directive';
+import { EditPictureModel } from '../../models/edit-picture.model';
 
 @Component({
   selector: 'metavision-pictures',
@@ -54,9 +61,12 @@ import { PictureType } from '../../enums/picture-type';
     MatToolbarModule,
     MatFormFieldModule,
     MatInputModule,
+    MatIconModule,
     ReactiveFormsModule,
     FormsModule,
     CommonModule,
+    OperationButtonDirective,
+    OperationButtonIconDirective,
     FormFieldDirective,
     FontHelperDirective,
     ButtonHelperDirective,
@@ -101,6 +111,7 @@ export class PicturesComponent
     private errorHandlerService: ErrorHandlerService,
     private guardsHelperService: GuardsHelperService,
     private alertService: AlertService,
+    private dialog: MatDialog,
     public customValidationMessageService: CustomValidationMessageService,
   ) {}
 
@@ -453,5 +464,27 @@ export class PicturesComponent
       });
 
     this.picturesOrderChange.set([]);
+  }
+
+  openDialog(
+    pictureId: number,
+    rowVersion: string,
+    pictureAlt: string,
+    pictureTitle: string,
+  ): void {
+    /*const dialogRef = */ this.dialog.open(EditPictureModalComponent, {
+      data: new EditPictureModel(
+        pictureId,
+        pictureAlt,
+        pictureTitle,
+        rowVersion,
+      ),
+    });
+
+    // dialogRef.afterClosed().subscribe((result) => {
+    //   if (result !== undefined) {
+    //     this.animal.set(result);
+    //   }
+    // });
   }
 }

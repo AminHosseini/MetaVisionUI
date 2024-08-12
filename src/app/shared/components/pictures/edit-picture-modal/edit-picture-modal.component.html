@@ -1,0 +1,75 @@
+<h2 mat-dialog-title>ویرایش عکس</h2>
+<mat-dialog-content>
+  <form [formGroup]="editPictureForm" (ngSubmit)="onSubmit()" #form="ngForm">
+    <mat-form-field metavisionFormField>
+      <mat-label metavisionFontHelper>عنوان عکس</mat-label>
+      <input
+        type="text"
+        matInput
+        metavisionFontHelper
+        formControlName="pictureTitle"
+      />
+      @if (
+        ControlNotValid("pictureTitle") &&
+        getControlErrors("pictureTitle")?.["required"]
+      ) {
+        <mat-error metavisionFontHelper>{{
+          customValidationMessageService.fieldCannotBeEmpty
+        }}</mat-error>
+      }
+      @if (
+        ControlNotValid("pictureTitle") &&
+        getControlErrors("pictureTitle")?.["maxlength"]
+      ) {
+        <mat-error metavisionFontHelper>{{
+          customValidationMessageService.maximumFieldCharacters
+        }}</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field metavisionFormField>
+      <mat-label metavisionFontHelper>آلت عکس</mat-label>
+      <input
+        type="text"
+        matInput
+        metavisionFontHelper
+        formControlName="pictureAlt"
+      />
+      @if (
+        ControlNotValid("pictureAlt") &&
+        getControlErrors("pictureAlt")?.["required"]
+      ) {
+        <mat-error metavisionFontHelper>{{
+          customValidationMessageService.fieldCannotBeEmpty
+        }}</mat-error>
+      }
+      @if (
+        ControlNotValid("pictureAlt") &&
+        getControlErrors("pictureAlt")?.["maxlength"]
+      ) {
+        <mat-error metavisionFontHelper>{{
+          customValidationMessageService.maximumFieldCharacters
+        }}</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button
+    metavisionButtonHelper
+    mat-raised-button
+    type="button"
+    (click)="onNoClick()"
+  >
+    بستن
+  </button>
+  <button
+    metavisionButtonHelper
+    mat-raised-button
+    color="primary"
+    type="submit"
+    [disabled]="!this.editPictureForm.valid"
+    (click)="onSubmit()"
+  >
+    ‌ذخیره کردن
+  </button>
+</mat-dialog-actions>

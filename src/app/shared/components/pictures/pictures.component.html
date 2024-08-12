@@ -208,6 +208,34 @@
                   <span class="">عنوان: {{ picture.pictureTitle }}</span>
                 </div>
               </div>
+              <div class="draggable-box-action">
+                <button
+                  type="button"
+                  class="btn btn-outline-warning icon-hover"
+                  title="ویرایش"
+                  metavisionOperationButton
+                  (click)="
+                    openDialog(
+                      picture.pictureId,
+                      picture.rowVersion,
+                      picture.pictureAlt,
+                      picture.pictureTitle
+                    )
+                  "
+                >
+                  <mat-icon metavisionOperationButtonIcon
+                    >remove_red_eye</mat-icon
+                  >
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger"
+                  title="حذف"
+                  metavisionOperationButton
+                >
+                  <mat-icon metavisionOperationButtonIcon>delete</mat-icon>
+                </button>
+              </div>
             </div>
           }
         </div>
