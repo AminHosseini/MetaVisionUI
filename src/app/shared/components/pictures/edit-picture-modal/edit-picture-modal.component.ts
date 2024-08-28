@@ -34,6 +34,9 @@ import { FontHelperDirective } from '../../../directives/font-helper.directive';
 import { HelperService } from '../../../services/helper.service';
 import { CustomValidationMessageService } from '../../../services/custom-validation-message.service';
 import { ButtonHelperDirective } from '../../../directives/button-helper.directive';
+import { PictureService } from '../../../services/picture.service';
+import { AlertService } from '../../../services/alert.service';
+import { ErrorHandlerService } from '../../../services/error-handler.service';
 
 @Component({
   selector: 'app-edit-picture-modal',
@@ -64,6 +67,9 @@ export class EditPictureModalComponent implements OnInit {
 
   constructor(
     private helperService: HelperService,
+    private pictureService: PictureService,
+    private alertService: AlertService,
+    private errorHandlerService: ErrorHandlerService,
     public customValidationMessageService: CustomValidationMessageService,
   ) {}
 
@@ -139,5 +145,17 @@ export class EditPictureModalComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  onSubmit(): void {}
+  /**
+   * عملیات های انجام شده به هنگام سابمیت کردن فرم
+   */
+  onSubmit(): void {
+    const model = new EditPictureModel(
+      +this.data.id,
+      this.editPictureForm.controls['pictureAlt'].value,
+      this.editPictureForm.controls['pictureTitle'].value,
+      this.data.rowVersion,
+    );
+
+    this.pictureService.editPicture(model);
+  }
 }

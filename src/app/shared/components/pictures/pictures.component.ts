@@ -51,17 +51,18 @@ import { EditPictureModalComponent } from './edit-picture-modal/edit-picture-mod
 import { OperationButtonDirective } from '../../directives/operation-button.directive';
 import { OperationButtonIconDirective } from '../../directives/operation-button-icon.directive';
 import { EditPictureModel } from '../../models/edit-picture.model';
+import { DeletePictureModel } from '../../models/delete-picture.model';
 
 @Component({
   selector: 'metavision-pictures',
   standalone: true,
   imports: [
     MatTabsModule,
+    MatIconModule,
     MatButtonModule,
     MatToolbarModule,
     MatFormFieldModule,
     MatInputModule,
-    MatIconModule,
     ReactiveFormsModule,
     FormsModule,
     CommonModule,
@@ -443,14 +444,20 @@ export class PicturesComponent
   /**
    * ارسال درخواست تغییر اولویت نمایش عکس به ای پی آی
    */
-  changePictureOrders(): void {
+  changePictureOrders(
+    changePictureOrderModels: ChangePictureOrderModel[] = [],
+  ): void {
     const parentId: string =
       this.activatedRoute.snapshot.queryParams['parentId'];
     const pictureType: string =
       this.activatedRoute.snapshot.queryParams['pictureType'];
 
     this.pictureService
-      .editPicturesDisplayOrder(this.picturesOrderChange())
+      .editPicturesDisplayOrder(
+        changePictureOrderModels.length > 0
+          ? changePictureOrderModels
+          : this.picturesOrderChange(),
+      )
       .subscribe({
         complete: () => {
           this.refillPictures(
@@ -462,29 +469,103 @@ export class PicturesComponent
           this.errorHandlerService.handleError(err);
         },
       });
-
     this.picturesOrderChange.set([]);
   }
 
+  /**
+   * باز کردن مودال ویرایش اطلاعات عکس
+   * @param pictureId آیدی عکس
+   * @param rowVersion عکس rowVersion
+   * @param pictureAlt آلت عکس
+   * @param pictureTitle عنوان عکس
+   */
   openDialog(
     pictureId: number,
     rowVersion: string,
     pictureAlt: string,
     pictureTitle: string,
   ): void {
-    /*const dialogRef = */ this.dialog.open(EditPictureModalComponent, {
-      data: new EditPictureModel(
-        pictureId,
-        pictureAlt,
-        pictureTitle,
-        rowVersion,
-      ),
-    });
+    const parentId: string =
+      this.activatedRoute.snapshot.queryParams['parentId'];
+    const pictureType: string =
+      this.activatedRoute.snapshot.queryParams['pictureType'];
+    this.dialog
+      .open(EditPictureModalComponent, {
+        data: new EditPictureModel(
+          pictureId,
+          pictureAlt,
+          pictureTitle,
+          rowVersion,
+        ),
+      })
+      .beforeClosed()
+      .subscribe((result) => {
+        this.refillPictures(new PicturesRequestModel(+parentId, +pictureType));
+        this.picturesOrderChange.set([]);
+        // if (result !== undefined) {
+        //   this.alertService.errorAlert();
+        // }
+      });
+  }
 
-    // dialogRef.afterClosed().subscribe((result) => {
-    //   if (result !== undefined) {
-    //     this.animal.set(result);
-    //   }
-    // });
+  /**
+   * حذف عکس و تغییر ترتیب نمایش باقی عکس ها
+   * @param pictureId آیدی عکس
+   * @param rowversion عکس rowVersion
+   * @returns
+   */
+  async deletePicture(pictureId: number, rowversion: string): Promise<void> {
+    // ارسال پیام آیا از حذف اطمینان دارید؟
+    const result = await this.alertService.deleteAsync();
+    if (!result.isConfirmed) {
+      return;
+    }
+    // ارسال پیام آیا از حذف اطمینان دارید؟
+
+    // ساخت مدل برای ارسال درخواست حذف
+    // const parentId: string =
+    //   this.activatedRoute.snapshot.queryParams['parentId'];
+    const pictureType: number =
+      this.activatedRoute.snapshot.queryParams['pictureType'];
+    const model = new DeletePictureModel(pictureId, rowversion);
+    // ساخت مدل برای ارسال درخواست حذف
+
+    // شروع فرآیند حذف
+    this.pictureService.deletePicture(model).subscribe({
+      complete: () => {
+        // حذف عکس مورد نظر از لیست عکس ها
+        let pictures: PicturesModel[] = this.pictures();
+        const deleteIndex: number = pictures.indexOf(
+          pictures.filter((pic: PicturesModel) => {
+            return pic.pictureId === model.id;
+          })[0],
+        );
+        pictures.splice(deleteIndex, 1);
+        // حذف عکس مورد نظر از لیست عکس ها
+
+        // درست کردن ترتیب نمایش عکس ها
+        let changePictureOrderModels: ChangePictureOrderModel[] = [];
+        for (let index = 0; index < pictures.length; index++) {
+          let pic = pictures[index];
+          changePictureOrderModels.push(
+            new ChangePictureOrderModel(
+              pic.pictureId,
+              index + 1,
+              +pictureType,
+              pic.rowVersion,
+            ),
+          );
+        }
+        this.changePictureOrders(changePictureOrderModels);
+        // درست کردن ترتیب نمایش عکس ها
+
+        // this.refillPictures(new PicturesRequestModel(+parentId, +pictureType));
+        // this.alertService.successAlert();
+      },
+      error: (err) => {
+        this.errorHandlerService.handleError(err);
+      },
+    });
+    // شروع فرآیند حذف
   }
 }

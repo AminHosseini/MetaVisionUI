@@ -68,3 +68,10 @@ body {
 .icon-hover:hover > :first-child {
   color: #ffffff;
 }
+
+.mat-mdc-tab {
+  font-family: "vazir" !important;
+  font-weight: 15px !important;
+  font-size: 18px !important;
+  letter-spacing: normal !important;
+}

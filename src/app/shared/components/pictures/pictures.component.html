@@ -232,6 +232,7 @@
                   class="btn btn-outline-danger"
                   title="حذف"
                   metavisionOperationButton
+                  (click)="deletePicture(picture.pictureId, picture.rowVersion)"
                 >
                   <mat-icon metavisionOperationButtonIcon>delete</mat-icon>
                 </button>

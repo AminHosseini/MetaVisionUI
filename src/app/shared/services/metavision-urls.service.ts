@@ -40,4 +40,9 @@ export class MetavisionUrlsService {
   get pictureOrderUrl(): string {
     return `${this.domain}/pictures/order`;
   }
+
+  /** آدرس ای پی آی ویرایش اطلاعات عکس */
+  pictureEditUrl(id: number): string {
+    return `${this.domain}/pictures/${id}`;
+  }
 }

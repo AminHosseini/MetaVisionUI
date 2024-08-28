@@ -8,6 +8,9 @@ import { Subject, Observable } from 'rxjs';
 import { PicturesModel } from '../models/pictures.model';
 import { PicturesRequestModel } from '../models/pictures-request.model';
 import { ChangePictureOrderModel } from '../models/change-picture-order.model';
+import { EditPictureModel } from '../models/edit-picture.model';
+import { MatDialog } from '@angular/material/dialog';
+import { DeletePictureModel } from '../models/delete-picture.model';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +24,7 @@ export class PictureService {
     private metavisionUrlsService: MetavisionUrlsService,
     private alertService: AlertService,
     private errorHandlerService: ErrorHandlerService,
+    private dialog: MatDialog,
   ) {}
 
   // /**
@@ -62,6 +66,40 @@ export class PictureService {
     return this.httpClient.put<IdRowVersionModel[]>(
       this.metavisionUrlsService.pictureOrderUrl,
       pics,
+    );
+  }
+
+  /**
+   * ارسال درخواست تغییر اطلاعات عکس به ای پی آی
+   * @param pic اطلاعات جدید عکس
+   * @returns rowversion مدل آیدی و
+   */
+  editPicture(pic: EditPictureModel): void {
+    this.httpClient
+      .put<IdRowVersionModel>(
+        this.metavisionUrlsService.pictureEditUrl(pic.id),
+        pic,
+      )
+      .subscribe({
+        complete: () => {
+          this.alertService.successAlert();
+          this.dialog.closeAll();
+        },
+        error: (err) => {
+          this.errorHandlerService.handleError(err);
+        },
+      });
+  }
+
+  /**
+   * ارسال درخواست حذف عکس به ای پی آی
+   * @param pic عکس
+   * @returns عکس حذف شد؟
+   */
+  deletePicture(pic: DeletePictureModel): Observable<boolean> {
+    return this.httpClient.patch<boolean>(
+      this.metavisionUrlsService.pictureUrl,
+      pic,
     );
   }
 
